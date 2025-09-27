@@ -14,12 +14,6 @@ import java.util.Map;
 @Mixin(RenderLayers.class)
 public class RenderLayersMixin
 {
-    /*
-        we need to return BlockRenderLayer.TRANSLUCENT for shulker boxes
-        because they have transparent parts in the texture, if we don't
-        do this we get z-fighting because the SOLID layer fills
-        in the transparent parts
-    */
     @Inject(method = "getBlockLayer", at = @At("HEAD"), cancellable = true)
     private static void ForceBlockLayer(BlockState state, CallbackInfoReturnable<BlockRenderLayer> cir)
     {

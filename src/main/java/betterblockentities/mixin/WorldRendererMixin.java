@@ -62,119 +62,79 @@ public abstract class WorldRendererMixin
         if (!ConfigManager.CONFIG.use_animations)
             return;
 
-        /* add all blocks with ongoing breaking animation. do we need this????
-        for (Long2ObjectMap.Entry<SortedSet<BlockBreakingInfo>> entry : blockBreakingProgressions.long2ObjectEntrySet())
-        {
-            SortedSet<BlockBreakingInfo> set = entry.getValue();
-            for (BlockBreakingInfo info : set) {
-                BlockEntityTracker.blockBreakingMap.add(info.getPos());
-            }
-        }
-         */
-
         SortedRenderLists renderLists = this.renderSectionManager.getRenderLists();
         for (Iterator<ChunkRenderList> it = renderLists.iterator(); it.hasNext(); )
         {
             ChunkRenderList renderList = it.next();
-
             RenderRegion renderRegion = renderList.getRegion();
             ByteIterator renderSectionIterator = renderList.sectionsWithEntitiesIterator();
 
-            if (renderSectionIterator != null)
+            if (renderSectionIterator == null)
+                return;
+
+            while (renderSectionIterator.hasNext())
             {
-                while (renderSectionIterator.hasNext())
+                int renderSectionId = renderSectionIterator.nextByteAsInt();
+                RenderSection renderSection = renderRegion.getSection(renderSectionId);
+                BlockEntity[] blockEntities = renderSection.getCulledBlockEntities();
+
+                if (blockEntities == null)
+                    return;
+
+                for (BlockEntity blockEntity : blockEntities)
                 {
-                    int renderSectionId = renderSectionIterator.nextByteAsInt();
-                    RenderSection renderSection = renderRegion.getSection(renderSectionId);
-                    BlockEntity[] blockEntities = renderSection.getCulledBlockEntities();
-
-                    if (blockEntities != null)
+                    if (blockEntity instanceof ChestBlockEntity || blockEntity instanceof EnderChestBlockEntity
+                            || blockEntity instanceof ShulkerBoxBlockEntity || blockEntity instanceof TrappedChestBlockEntity)
                     {
-                        for (BlockEntity blockEntity : blockEntities)
+                        float animationProgress = blockEntity instanceof ShulkerBoxBlockEntity
+                                ? ((ShulkerBoxBlockEntity) blockEntity).getAnimationProgress(tickDelta)
+                                : ((LidOpenable) blockEntity).getAnimationProgress(tickDelta);
+
+                        if (animationProgress > 0.00)
                         {
-                            if (/*!BlockEntityTracker.blockBreakingMap.contains(blockEntity.getPos()) &&*/
-                                    blockEntity instanceof ChestBlockEntity || blockEntity instanceof EnderChestBlockEntity
-                                    || blockEntity instanceof ShulkerBoxBlockEntity || blockEntity instanceof TrappedChestBlockEntity)
+                            if (!(BlockEntityTracker.animMap.contains(blockEntity.getPos())))
                             {
-                                float animProg = blockEntity instanceof ShulkerBoxBlockEntity
-                                        ? ((ShulkerBoxBlockEntity) blockEntity).getAnimationProgress(tickDelta)
-                                        : ((LidOpenable) blockEntity).getAnimationProgress(tickDelta);
-
-                                /*
-                                    if we are animating, render block entity with block entity renderer.
-                                    add to animating map, add to chunk update map
-
-                                    if not animating, remove from animating map, add to chunk update map
-                                */
-                                if (animProg > 0.00)
-                                {
-                                    if (!(BlockEntityTracker.animMap.contains(blockEntity.getPos())))
-                                    {
-                                        BlockEntityTracker.animMap.add(blockEntity.getPos());
-                                        BlockEntityTracker.sectionsToUpdate.add(renderSection);
-                                    }
-                                    this.renderBlockEntity(matrices, bufferBuilders, blockBreakingProgressions, tickDelta, immediate, x, y, z, blockEntityRenderer, blockEntity, player, isGlowing);
-                                }
-                                else
-                                {
-                                    if (BlockEntityTracker.animMap.contains(blockEntity.getPos()))
-                                    {
-                                        BlockEntityTracker.animMap.remove(blockEntity.getPos());
-                                        BlockEntityTracker.sectionsToUpdate.add(renderSection);
-                                        BlockEntityTracker.extraRenderPasses.put(blockEntity.getPos(), ConfigManager.CONFIG.smoothness_slider);
-                                    }
-                                }
-
-                                /*
-                                    keep rendering the chest with BlockEntityRenderer for 3 passes after
-                                    it is done animating to get rid of the harsh transition between
-                                    "entity rendered chest" and "mesh chest"
-
-                                    found 3 to work the best, you could modify the passes depending on the
-                                    transition smoothness you want (miniscule performance impact)
-                                */
-                                if (BlockEntityTracker.extraRenderPasses.containsKey(blockEntity.getPos()))
-                                {
-                                    int passes = BlockEntityTracker.extraRenderPasses.get(blockEntity.getPos());
-                                    if (passes > 0)
-                                    {
-                                        BlockEntityTracker.extraRenderPasses.put(blockEntity.getPos(), passes - 1);
-                                        this.renderBlockEntity(matrices, bufferBuilders, blockBreakingProgressions, tickDelta, immediate, x, y, z, blockEntityRenderer, blockEntity, player, isGlowing);
-                                    }
-                                    else {
-                                        BlockEntityTracker.extraRenderPasses.remove(blockEntity.getPos());
-                                    }
-                                }
+                                BlockEntityTracker.animMap.add(blockEntity.getPos());
+                                BlockEntityTracker.sectionsToUpdate.add(renderSection);
                             }
-                            else
+                            this.renderBlockEntity(matrices, bufferBuilders, blockBreakingProgressions, tickDelta, immediate, x, y, z, blockEntityRenderer, blockEntity, player, isGlowing);
+                        }
+                        else
+                        {
+                            if (BlockEntityTracker.animMap.contains(blockEntity.getPos()))
                             {
-                                /*
-                                    render other BlockEntities normally for now (signs, beacons, etc...)
-                                    OBS: the code above won't work for other block entities like beacons
-                                    as they animate all the time (they don't have a lid)
-                                */
-                                /*BlockEntityTracker.blockBreakingMap.remove(blockEntity.getPos());*/
+                                BlockEntityTracker.animMap.remove(blockEntity.getPos());
+                                BlockEntityTracker.sectionsToUpdate.add(renderSection);
+                                BlockEntityTracker.extraRenderPasses.put(blockEntity.getPos(), ConfigManager.CONFIG.smoothness_slider);
+                            }
+                        }
+                        if (BlockEntityTracker.extraRenderPasses.containsKey(blockEntity.getPos()))
+                        {
+                            int renderPasses = BlockEntityTracker.extraRenderPasses.get(blockEntity.getPos());
+                            if (renderPasses > 0)
+                            {
+                                BlockEntityTracker.extraRenderPasses.put(blockEntity.getPos(), renderPasses - 1);
                                 this.renderBlockEntity(matrices, bufferBuilders, blockBreakingProgressions, tickDelta, immediate, x, y, z, blockEntityRenderer, blockEntity, player, isGlowing);
+                            }
+                            else {
+                                BlockEntityTracker.extraRenderPasses.remove(blockEntity.getPos());
                             }
                         }
                     }
-                }
-                /*
-                    "chunk rebuild/update flow":
-                     -setPendingUpdate() - flags the section for rebuilding
-                     -updateChunks() - rebuild flagged sections immediately
-                     -markGraphDirty() - ensure visibility is recalculated
-                */
-                if (!BlockEntityTracker.sectionsToUpdate.isEmpty())
-                {
-                    for (RenderSection section : BlockEntityTracker.sectionsToUpdate) {
-                        section.setPendingUpdate(ChunkUpdateType.IMPORTANT_REBUILD);
+                    else {
+                        this.renderBlockEntity(matrices, bufferBuilders, blockBreakingProgressions, tickDelta, immediate, x, y, z, blockEntityRenderer, blockEntity, player, isGlowing);
                     }
-                    BlockEntityTracker.sectionsToUpdate.clear();
-                    this.renderSectionManager.updateChunks(true);
-                    this.renderSectionManager.markGraphDirty();
                 }
             }
+            if (BlockEntityTracker.sectionsToUpdate.isEmpty())
+                return;
+
+            for (RenderSection section : BlockEntityTracker.sectionsToUpdate) {
+                section.setPendingUpdate(ChunkUpdateType.IMPORTANT_REBUILD);
+            }
+            BlockEntityTracker.sectionsToUpdate.clear();
+            this.renderSectionManager.updateChunks(true);
+            this.renderSectionManager.markGraphDirty();
         }
     }
 }

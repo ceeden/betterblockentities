@@ -19,8 +19,6 @@ public class EnderChestBlockMixin
     private <T extends BlockEntity> void removeTicker(World world, BlockState state, BlockEntityType<T> type, CallbackInfoReturnable<BlockEntityTicker<T>> cir)
     {
         if (!ConfigManager.CONFIG.use_animations)
-        {
             cir.setReturnValue(null);
-        }
     }
 }
