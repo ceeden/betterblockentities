@@ -96,13 +96,9 @@ public abstract class WorldRendererMixin
                                     blockEntity instanceof ChestBlockEntity || blockEntity instanceof EnderChestBlockEntity
                                     || blockEntity instanceof ShulkerBoxBlockEntity || blockEntity instanceof TrappedChestBlockEntity)
                             {
-                                float animProg;
-                                if (blockEntity instanceof ShulkerBoxBlockEntity)
-                                    animProg = ((ShulkerBoxBlockEntity) blockEntity).getAnimationProgress(tickDelta);
-                                else {
-                                    LidOpenable lid = (LidOpenable)(blockEntity);
-                                    animProg = lid.getAnimationProgress(tickDelta);
-                                }
+                                float animProg = blockEntity instanceof ShulkerBoxBlockEntity
+                                        ? ((ShulkerBoxBlockEntity) blockEntity).getAnimationProgress(tickDelta)
+                                        : ((LidOpenable) blockEntity).getAnimationProgress(tickDelta);
 
                                 /*
                                     if we are animating, render block entity with block entity renderer.
