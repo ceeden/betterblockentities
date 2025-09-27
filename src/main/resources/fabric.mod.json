@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "id": "betterblockentities",
+  "version": "${version}",
+
+  "name": "BetterBlockEntities",
+  "description": "Optimize and customize block entity rendering with a more modern approach.",
+  "authors": [
+    "ceeden"
+  ],
+  "contact": {
+    "homepage": "",
+    "issues": "",
+    "sources": ""
+  },
+
+  "license": "LGPLv3",
+  "icon": "assets/betterblockentities/icon.png",
+
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "betterblockentities.BetterBlockEntities"
+    ],
+    "modmenu": [
+      "betterblockentities.gui.ModMenu"
+    ]
+  },
+  "fabric": {
+    "client": {
+      "modelLoadingPlugins": [
+        "betterblockentities.ModelLoader"
+      ]
+    }
+  },
+  "mixins": [
+    "betterblockentities.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.16.7",
+    "fabric-api": ">=0.114.1",
+    "minecraft": ">=1.21.8"
+  },
+  "breaks": {
+    "optifabric": "*"
+  },
+  "custom": {
+    "modmenu": {
+      "links": {
+
+      }
+    }
+  }
+}

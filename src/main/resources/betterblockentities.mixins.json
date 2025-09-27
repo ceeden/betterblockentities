@@ -1,0 +1,21 @@
+{
+  "required": true,
+  "package": "betterblockentities.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "AbstractBlockMixin",
+    "BlockEntityRenderDispatcherMixin",
+    "BlockRendererMixin",
+    "ChestBlockMixin",
+    "EnderChestBlockMixin",
+    "RenderLayersMixin",
+    "ShulkerBoxBlockMixin",
+    "WorldRendererMixin"
+  ],
+  "server": [],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "client": [
+  ]
+}
