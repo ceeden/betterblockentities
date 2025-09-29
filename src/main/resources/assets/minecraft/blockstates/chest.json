@@ -1,54 +1,18 @@
 {
-  "multipart": [
-    {
-      "when": { "type": "single", "facing": "north" },
-      "apply": { "model": "minecraft:block/chest" }
-    },
-    {
-      "when": { "type": "single", "facing": "east" },
-      "apply": { "model": "minecraft:block/chest", "y": 90 }
-    },
-    {
-      "when": { "type": "single", "facing": "south" },
-      "apply": { "model": "minecraft:block/chest", "y": 180 }
-    },
-    {
-      "when": { "type": "single", "facing": "west" },
-      "apply": { "model": "minecraft:block/chest", "y": 270 }
-    },
+  "variants": {
+    "type=single,facing=north": { "model": "minecraft:block/chest" },
+    "type=single,facing=east":  { "model": "minecraft:block/chest", "y": 90 },
+    "type=single,facing=south": { "model": "minecraft:block/chest", "y": 180 },
+    "type=single,facing=west":  { "model": "minecraft:block/chest", "y": 270 },
 
-    {
-      "when": { "type": "left", "facing": "north" },
-      "apply": { "model": "minecraft:block/left_chest" }
-    },
-    {
-      "when": { "type": "left", "facing": "east" },
-      "apply": { "model": "minecraft:block/left_chest", "y": 90 }
-    },
-    {
-      "when": { "type": "left", "facing": "south" },
-      "apply": { "model": "minecraft:block/left_chest", "y": 180 }
-    },
-    {
-      "when": { "type": "left", "facing": "west" },
-      "apply": { "model": "minecraft:block/left_chest", "y": 270 }
-    },
+    "type=left,facing=north": { "model": "minecraft:block/left_chest" },
+    "type=left,facing=east":  { "model": "minecraft:block/left_chest", "y": 90 },
+    "type=left,facing=south": { "model": "minecraft:block/left_chest", "y": 180 },
+    "type=left,facing=west":  { "model": "minecraft:block/left_chest", "y": 270 },
 
-    {
-      "when": { "type": "right", "facing": "north" },
-      "apply": { "model": "minecraft:block/right_chest" }
-    },
-    {
-      "when": { "type": "right", "facing": "east" },
-      "apply": { "model": "minecraft:block/right_chest", "y": 90 }
-    },
-    {
-      "when": { "type": "right", "facing": "south" },
-      "apply": { "model": "minecraft:block/right_chest", "y": 180 }
-    },
-    {
-      "when": { "type": "right", "facing": "west" },
-      "apply": { "model": "minecraft:block/right_chest", "y": 270 }
-    }
-  ]
+    "type=right,facing=north": { "model": "minecraft:block/right_chest" },
+    "type=right,facing=east":  { "model": "minecraft:block/right_chest", "y": 90 },
+    "type=right,facing=south": { "model": "minecraft:block/right_chest", "y": 180 },
+    "type=right,facing=west":  { "model": "minecraft:block/right_chest", "y": 270 }
+  }
 }
