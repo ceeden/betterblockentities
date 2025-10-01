@@ -19,7 +19,7 @@ public class BlockEntityManager
 
     private boolean sanityCheck()
     {
-        if (blockEntity instanceof ChestBlockEntity || blockEntity instanceof EnderChestBlockEntity || blockEntity instanceof TrappedChestBlockEntity)
+        if (blockEntity instanceof ChestBlockEntity || blockEntity instanceof EnderChestBlockEntity)
             return true;
         else if (blockEntity instanceof ShulkerBoxBlockEntity)
             return true;
@@ -33,7 +33,7 @@ public class BlockEntityManager
         float animationProgress = 0;
         boolean animating = false;
 
-        if (blockEntity instanceof ChestBlockEntity || blockEntity instanceof EnderChestBlockEntity || blockEntity instanceof TrappedChestBlockEntity)
+        if (blockEntity instanceof ChestBlockEntity || blockEntity instanceof EnderChestBlockEntity)
             animationProgress = ((LidOpenable)blockEntity).getAnimationProgress(tickDelta);
         else if (blockEntity instanceof ShulkerBoxBlockEntity)
             animationProgress = ((ShulkerBoxBlockEntity)blockEntity).getAnimationProgress(tickDelta);
