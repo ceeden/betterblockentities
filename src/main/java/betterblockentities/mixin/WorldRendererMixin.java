@@ -6,7 +6,6 @@ import betterblockentities.helpers.BlockEntityManager;
 import betterblockentities.helpers.BlockEntityTracker;
 
 /* sodium */
-import betterblockentities.helpers.ChunkUpdateManager;
 import net.caffeinemc.mods.sodium.client.render.SodiumWorldRenderer;
 import net.caffeinemc.mods.sodium.client.render.chunk.ChunkUpdateTypes;
 import net.caffeinemc.mods.sodium.client.render.chunk.RenderSection;
@@ -18,7 +17,6 @@ import net.caffeinemc.mods.sodium.client.util.iterator.ByteIterator;
 
 /* minecraft */
 import net.minecraft.block.entity.*;
-import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.state.WorldRenderState;
 import net.minecraft.client.util.math.MatrixStack;
@@ -28,7 +26,6 @@ import net.minecraft.entity.player.BlockBreakingInfo;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
-import com.llamalad7.mixinextras.sugar.ref.LocalBooleanRef;
 
 /* java/misc */
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
