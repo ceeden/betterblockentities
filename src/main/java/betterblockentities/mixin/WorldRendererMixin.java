@@ -2,6 +2,7 @@ package betterblockentities.mixin;
 
 /* local */
 import betterblockentities.gui.ConfigManager;
+import betterblockentities.helpers.BlockEntityManager;
 import betterblockentities.helpers.BlockEntityTracker;
 
 /* sodium */
@@ -83,47 +84,10 @@ public abstract class WorldRendererMixin
 
                 for (BlockEntity blockEntity : blockEntities)
                 {
-                    if (blockEntity instanceof ChestBlockEntity || blockEntity instanceof EnderChestBlockEntity
-                            || blockEntity instanceof ShulkerBoxBlockEntity || blockEntity instanceof TrappedChestBlockEntity)
-                    {
-                        float animationProgress = blockEntity instanceof ShulkerBoxBlockEntity
-                                ? ((ShulkerBoxBlockEntity) blockEntity).getAnimationProgress(tickDelta)
-                                : ((LidOpenable) blockEntity).getAnimationProgress(tickDelta);
-
-                        if (animationProgress > 0.00)
-                        {
-                            if (!(BlockEntityTracker.animMap.contains(blockEntity.getPos())))
-                            {
-                                BlockEntityTracker.animMap.add(blockEntity.getPos());
-                                BlockEntityTracker.sectionsToUpdate.add(renderSection);
-                            }
-                            this.renderBlockEntity(matrices, bufferBuilders, blockBreakingProgressions, tickDelta, immediate, x, y, z, blockEntityRenderer, blockEntity, player, isGlowing);
-                        }
-                        else
-                        {
-                            if (BlockEntityTracker.animMap.contains(blockEntity.getPos()))
-                            {
-                                BlockEntityTracker.animMap.remove(blockEntity.getPos());
-                                BlockEntityTracker.sectionsToUpdate.add(renderSection);
-                                BlockEntityTracker.extraRenderPasses.put(blockEntity.getPos(), ConfigManager.CONFIG.smoothness_slider);
-                            }
-                        }
-                        if (BlockEntityTracker.extraRenderPasses.containsKey(blockEntity.getPos()))
-                        {
-                            int renderPasses = BlockEntityTracker.extraRenderPasses.get(blockEntity.getPos());
-                            if (renderPasses > 0)
-                            {
-                                BlockEntityTracker.extraRenderPasses.put(blockEntity.getPos(), renderPasses - 1);
-                                this.renderBlockEntity(matrices, bufferBuilders, blockBreakingProgressions, tickDelta, immediate, x, y, z, blockEntityRenderer, blockEntity, player, isGlowing);
-                            }
-                            else {
-                                BlockEntityTracker.extraRenderPasses.remove(blockEntity.getPos());
-                            }
-                        }
-                    }
-                    else {
+                    BlockEntityManager manager = new BlockEntityManager(blockEntity, renderSection, tickDelta);
+                    if (manager.shouldRender())
                         this.renderBlockEntity(matrices, bufferBuilders, blockBreakingProgressions, tickDelta, immediate, x, y, z, blockEntityRenderer, blockEntity, player, isGlowing);
-                    }
+                    manager = null;
                 }
             }
             if (BlockEntityTracker.sectionsToUpdate.isEmpty())
@@ -138,3 +102,5 @@ public abstract class WorldRendererMixin
         }
     }
 }
+
+
