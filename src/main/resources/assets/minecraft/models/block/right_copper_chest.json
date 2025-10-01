@@ -1,0 +1,46 @@
+{
+  "parent": "block/block",
+  "texture_size": [64, 64],
+  "textures": {
+    "particle": "#chest",
+    "chest": "minecraft:entity/chest/copper"
+  },
+  "elements": [
+    {
+      "from": [0, 0, 1],
+      "to": [15, 10, 15],
+      "rotation": {"angle": 0, "axis": "y", "origin": [9, 8, 9]},
+      "faces": {
+        "north": {"uv": [7.5, 8.25, 10.45, 10.75], "rotation": 180, "texture": "#chest"},
+        "east": {"uv": [0, 8.25, 3.5, 10.75], "rotation": 180, "texture": "#chest"},
+        "south": {"uv": [3.525, 8.25, 6.775, 10.75], "rotation": 180, "texture": "#chest"},
+        "west": {"uv": [6.75, 12.25, 10.25, 14.75], "rotation": 180, "texture": "#chest"},
+        "up": {"uv": [7.5, 4.75, 10.5, 8.25], "texture": "#chest"},
+        "down": {"uv": [4, 4.75, 6.95, 8.25], "texture": "#chest", "cullface": "down"}
+      }
+    },
+    {
+      "from": [0, 9, 1],
+      "to": [15, 14, 15],
+      "rotation": {"angle": 0, "axis": "y", "origin": [9, 18, 9]},
+      "faces": {
+        "north": {"uv": [7.25, 3.5, 10.465, 4.75], "rotation": 180, "texture": "#chest"},
+        "east": {"uv": [0, 3.5, 3.5, 4.75], "rotation": 180, "texture": "#chest"},
+        "south": {"uv": [3.525, 3.5, 6.74, 4.75], "rotation": 180, "texture": "#chest"},
+        "west": {"uv": [11.75, 6.25, 15.25, 7.5], "rotation": 180, "texture": "#chest"},
+        "up": {"uv": [10, 0, 7.05, 3.5], "texture": "#chest"}
+      }
+    },
+    {
+      "from": [0, 7, 0],
+      "to": [1, 11, 1],
+      "faces": {
+        "north": {"uv": [0.5, 0.25, 1, 1.25], "rotation": 180, "texture": "#chest"},
+        "east": {"uv": [0, 0.25, 0.25, 1.25], "rotation": 180, "texture": "#chest"},
+        "west": {"uv": [0.75, 0.25, 1, 1.25], "rotation": 180, "texture": "#chest"},
+        "up": {"uv": [1.25, 0, 0.75, 0.25], "texture": "#chest"},
+        "down": {"uv": [0.25, 0, 0.75, 0.25], "rotation": 180, "texture": "#chest"}
+      }
+    }
+  ]
+}
