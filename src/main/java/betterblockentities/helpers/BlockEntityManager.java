@@ -75,7 +75,7 @@ public class BlockEntityManager
         {
             BlockEntityTracker.animMap.remove(blockEntity.getPos());
             BlockEntityTracker.sectionsToUpdate.add(renderSection);
-            BlockEntityTracker.extraRenderPasses.put(blockEntity.getPos(), 3);
+            BlockEntityTracker.extraRenderPasses.put(blockEntity.getPos(), 20);
         }
         if (BlockEntityTracker.extraRenderPasses.containsKey(blockEntity.getPos()))
         {
