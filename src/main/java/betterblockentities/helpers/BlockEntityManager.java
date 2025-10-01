@@ -2,6 +2,7 @@ package betterblockentities.helpers;
 
 import betterblockentities.gui.ConfigManager;
 import net.caffeinemc.mods.sodium.client.render.chunk.RenderSection;
+import net.minecraft.block.CopperChestBlock;
 import net.minecraft.block.entity.*;
 
 public class BlockEntityManager
