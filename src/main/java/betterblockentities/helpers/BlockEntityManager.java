@@ -1,9 +1,7 @@
 package betterblockentities.helpers;
 
 import betterblockentities.gui.ConfigManager;
-import net.caffeinemc.mods.sodium.client.render.chunk.ChunkUpdateType;
 import net.caffeinemc.mods.sodium.client.render.chunk.RenderSection;
-import net.caffeinemc.mods.sodium.client.render.chunk.RenderSectionManager;
 import net.minecraft.block.entity.*;
 
 public class BlockEntityManager
