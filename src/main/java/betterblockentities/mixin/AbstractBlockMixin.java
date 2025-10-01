@@ -16,7 +16,8 @@ public abstract class AbstractBlockMixin
     private void ForceToMesh(BlockState state, CallbackInfoReturnable<BlockRenderType> cir)
     {
         Block block = state.getBlock();
-        if (block instanceof ChestBlock || block instanceof EnderChestBlock || block instanceof ShulkerBoxBlock || block instanceof TrappedChestBlock)
+        if (block instanceof ChestBlock || block instanceof EnderChestBlock || block instanceof ShulkerBoxBlock || block instanceof TrappedChestBlock
+        || block instanceof BellBlock)
             cir.setReturnValue(BlockRenderType.MODEL);
     }
 }

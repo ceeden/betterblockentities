@@ -2,6 +2,7 @@ package betterblockentities.mixin;
 
 /* local */
 import betterblockentities.gui.ConfigManager;
+import betterblockentities.helpers.BlockEntityManager;
 import betterblockentities.helpers.BlockEntityTracker;
 
 /* sodium */
@@ -62,6 +63,8 @@ public abstract class WorldRendererMixin
         if (!ConfigManager.CONFIG.use_animations)
             return;
 
+        var idk = 1;
+
         SortedRenderLists renderLists = this.renderSectionManager.getRenderLists();
         for (Iterator<ChunkRenderList> it = renderLists.iterator(); it.hasNext(); )
         {
@@ -83,6 +86,7 @@ public abstract class WorldRendererMixin
 
                 for (BlockEntity blockEntity : blockEntities)
                 {
+                    /*
                     if (blockEntity instanceof ChestBlockEntity || blockEntity instanceof EnderChestBlockEntity
                             || blockEntity instanceof ShulkerBoxBlockEntity || blockEntity instanceof TrappedChestBlockEntity)
                     {
@@ -121,11 +125,15 @@ public abstract class WorldRendererMixin
                             }
                         }
                     }
-                    else {
+                     */
+
+                    BlockEntityManager manager = new BlockEntityManager(blockEntity, renderSection, tickDelta);
+                    if (manager.shouldRender())
                         this.renderBlockEntity(matrices, bufferBuilders, blockBreakingProgressions, tickDelta, immediate, x, y, z, blockEntityRenderer, blockEntity, player, isGlowing);
-                    }
+                    manager = null;
                 }
             }
+
             if (BlockEntityTracker.sectionsToUpdate.isEmpty())
                 return;
 
