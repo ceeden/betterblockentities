@@ -7,7 +7,7 @@ import betterblockentities.helpers.BlockEntityTracker;
 
 /* sodium */
 import net.caffeinemc.mods.sodium.client.render.SodiumWorldRenderer;
-import net.caffeinemc.mods.sodium.client.render.chunk.ChunkUpdateType;
+import net.caffeinemc.mods.sodium.client.render.chunk.ChunkUpdateTypes;
 import net.caffeinemc.mods.sodium.client.render.chunk.RenderSection;
 import net.caffeinemc.mods.sodium.client.render.chunk.RenderSectionManager;
 import net.caffeinemc.mods.sodium.client.render.chunk.lists.ChunkRenderList;
@@ -19,7 +19,7 @@ import net.caffeinemc.mods.sodium.client.util.iterator.ByteIterator;
 import net.minecraft.block.entity.*;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.*;
-import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
+import net.minecraft.client.render.state.WorldRenderState;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.BlockBreakingInfo;
 
@@ -42,105 +42,80 @@ public abstract class WorldRendererMixin
     private RenderSectionManager renderSectionManager;
 
     @Shadow
-    protected static void renderBlockEntity(MatrixStack matrices, BufferBuilderStorage bufferBuilders, Long2ObjectMap<SortedSet<BlockBreakingInfo>> blockBreakingProgressions, float tickDelta, VertexConsumerProvider.Immediate immediate, double x, double y, double z, BlockEntityRenderDispatcher dispatcher, BlockEntity entity, ClientPlayerEntity player, LocalBooleanRef isGlowing)
-    { }
-
-     /**
-          @author ceeden
-          @reason
-
-          this adds upon the original sodium code and adds
-          our own animation/chunk rebuild/update logic.
-
-          we could definitely improve this code lol
-          performance wise its alright might want to
-          clean it up and put parts in separate
-          helper classes
-      */
-    @Overwrite
-    private void renderBlockEntities(MatrixStack matrices, BufferBuilderStorage bufferBuilders, Long2ObjectMap<SortedSet<BlockBreakingInfo>> blockBreakingProgressions, float tickDelta, VertexConsumerProvider.Immediate immediate, double x, double y, double z, BlockEntityRenderDispatcher blockEntityRenderer, ClientPlayerEntity player, LocalBooleanRef isGlowing)
+    private void extractBlockEntity(BlockEntity blockEntity, MatrixStack poseStack, Camera camera, float tickDelta, Long2ObjectMap<SortedSet<BlockBreakingInfo>> progression, WorldRenderState levelRenderState)
     {
-        if (!ConfigManager.CONFIG.use_animations)
-            return;
+    }
 
-        SortedRenderLists renderLists = this.renderSectionManager.getRenderLists();
-        for (Iterator<ChunkRenderList> it = renderLists.iterator(); it.hasNext(); )
+    /**
+     @author ceeden
+     @reason
+
+     this adds upon the original sodium code and adds
+     our own animation/chunk rebuild/update logic.
+
+     we could definitely improve this code lol
+     performance wise its alright might want to
+     clean it up and put parts in separate
+     helper classes
+     */
+    @Overwrite
+    public void extractBlockEntities(Camera camera, float tickDelta, Long2ObjectMap<SortedSet<BlockBreakingInfo>> progression, WorldRenderState levelRenderState) {
         {
-            ChunkRenderList renderList = it.next();
-            RenderRegion renderRegion = renderList.getRegion();
-            ByteIterator renderSectionIterator = renderList.sectionsWithEntitiesIterator();
-
-            if (renderSectionIterator == null)
+            if (!ConfigManager.CONFIG.use_animations)
                 return;
 
-            while (renderSectionIterator.hasNext())
+        /* add all blocks with ongoing breaking animation. do we need this????
+        for (Long2ObjectMap.Entry<SortedSet<BlockBreakingInfo>> entry : blockBreakingProgressions.long2ObjectEntrySet())
+        {
+            SortedSet<BlockBreakingInfo> set = entry.getValue();
+            for (BlockBreakingInfo info : set) {
+                BlockEntityTracker.blockBreakingMap.add(info.getPos());
+            }
+        }
+         */
+
+            MatrixStack stack = new MatrixStack();
+
+            SortedRenderLists renderLists = this.renderSectionManager.getRenderLists();
+            for (Iterator<ChunkRenderList> it = renderLists.iterator(); it.hasNext();)
             {
-                int renderSectionId = renderSectionIterator.nextByteAsInt();
-                RenderSection renderSection = renderRegion.getSection(renderSectionId);
-                BlockEntity[] blockEntities = renderSection.getCulledBlockEntities();
+                ChunkRenderList renderList = it.next();
 
-                if (blockEntities == null)
-                    return;
+                RenderRegion renderRegion = renderList.getRegion();
+                ByteIterator renderSectionIterator = renderList.sectionsWithEntitiesIterator();
 
-                for (BlockEntity blockEntity : blockEntities)
+                if (renderSectionIterator != null)
                 {
-                    /*
-                    if (blockEntity instanceof ChestBlockEntity || blockEntity instanceof EnderChestBlockEntity
-                            || blockEntity instanceof ShulkerBoxBlockEntity || blockEntity instanceof TrappedChestBlockEntity)
+                    while (renderSectionIterator.hasNext())
                     {
-                        float animationProgress = blockEntity instanceof ShulkerBoxBlockEntity
-                                ? ((ShulkerBoxBlockEntity) blockEntity).getAnimationProgress(tickDelta)
-                                : ((LidOpenable) blockEntity).getAnimationProgress(tickDelta);
+                        int renderSectionId = renderSectionIterator.nextByteAsInt();
+                        RenderSection renderSection = renderRegion.getSection(renderSectionId);
+                        BlockEntity[] blockEntities = renderSection.getCulledBlockEntities();
 
-                        if (animationProgress > 0.00)
+                        if (blockEntities != null)
                         {
-                            if (!(BlockEntityTracker.animMap.contains(blockEntity.getPos())))
+                            for (BlockEntity blockEntity : blockEntities)
                             {
-                                BlockEntityTracker.animMap.add(blockEntity.getPos());
-                                BlockEntityTracker.sectionsToUpdate.add(renderSection);
-                            }
-                            this.renderBlockEntity(matrices, bufferBuilders, blockBreakingProgressions, tickDelta, immediate, x, y, z, blockEntityRenderer, blockEntity, player, isGlowing);
-                        }
-                        else
-                        {
-                            if (BlockEntityTracker.animMap.contains(blockEntity.getPos()))
-                            {
-                                BlockEntityTracker.animMap.remove(blockEntity.getPos());
-                                BlockEntityTracker.sectionsToUpdate.add(renderSection);
-                                BlockEntityTracker.extraRenderPasses.put(blockEntity.getPos(), ConfigManager.CONFIG.smoothness_slider);
-                            }
-                        }
-                        if (BlockEntityTracker.extraRenderPasses.containsKey(blockEntity.getPos()))
-                        {
-                            int renderPasses = BlockEntityTracker.extraRenderPasses.get(blockEntity.getPos());
-                            if (renderPasses > 0)
-                            {
-                                BlockEntityTracker.extraRenderPasses.put(blockEntity.getPos(), renderPasses - 1);
-                                this.renderBlockEntity(matrices, bufferBuilders, blockBreakingProgressions, tickDelta, immediate, x, y, z, blockEntityRenderer, blockEntity, player, isGlowing);
-                            }
-                            else {
-                                BlockEntityTracker.extraRenderPasses.remove(blockEntity.getPos());
+                                BlockEntityManager manager = new BlockEntityManager(blockEntity, renderSection, tickDelta);
+                                if (manager.shouldRender())
+                                    this.extractBlockEntity(blockEntity, stack, camera, tickDelta, progression, levelRenderState);
+                                manager = null;
                             }
                         }
                     }
-                     */
 
-                    BlockEntityManager manager = new BlockEntityManager(blockEntity, renderSection, tickDelta);
-                    if (manager.shouldRender())
-                        this.renderBlockEntity(matrices, bufferBuilders, blockBreakingProgressions, tickDelta, immediate, x, y, z, blockEntityRenderer, blockEntity, player, isGlowing);
-                    manager = null;
+                    if (!BlockEntityTracker.sectionsToUpdate.isEmpty())
+                    {
+                        //need updating for 1.21.9, does not work, check SodiumWorldRenderer and chunk update/rebuild code
+                        for (RenderSection section : BlockEntityTracker.sectionsToUpdate) {
+                            section.setPendingUpdate(ChunkUpdateTypes.REBUILD, 0);
+                        }
+                        BlockEntityTracker.sectionsToUpdate.clear();
+                        this.renderSectionManager.updateChunks(true);
+                        this.renderSectionManager.markGraphDirty();
+                    }
                 }
             }
-
-            if (BlockEntityTracker.sectionsToUpdate.isEmpty())
-                return;
-
-            for (RenderSection section : BlockEntityTracker.sectionsToUpdate) {
-                section.setPendingUpdate(ChunkUpdateType.IMPORTANT_REBUILD);
-            }
-            BlockEntityTracker.sectionsToUpdate.clear();
-            this.renderSectionManager.updateChunks(true);
-            this.renderSectionManager.markGraphDirty();
         }
     }
 }
