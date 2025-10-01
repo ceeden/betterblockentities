@@ -95,9 +95,15 @@ public abstract class WorldRendererMixin
                     }
                 }
 
-                ChunkUpdateManager chunkManager = new ChunkUpdateManager(this.renderSectionManager);
-                chunkManager.updateTrackedSections();
-                chunkManager = null;
+                if (!BlockEntityTracker.sectionsToUpdate.isEmpty())
+                {
+                    for (RenderSection section : BlockEntityTracker.sectionsToUpdate) {
+                        section.setPendingUpdate(ChunkUpdateTypes.REBUILD, 0);
+                    }
+                    BlockEntityTracker.sectionsToUpdate.clear();
+                    this.renderSectionManager.updateChunks(true);
+                    this.renderSectionManager.markGraphDirty();
+                }
             }
         }
     }
