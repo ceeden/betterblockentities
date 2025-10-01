@@ -63,8 +63,6 @@ public abstract class WorldRendererMixin
         if (!ConfigManager.CONFIG.use_animations)
             return;
 
-        var idk = 1;
-
         SortedRenderLists renderLists = this.renderSectionManager.getRenderLists();
         for (Iterator<ChunkRenderList> it = renderLists.iterator(); it.hasNext(); )
         {
