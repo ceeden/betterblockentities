@@ -6,6 +6,7 @@ import betterblockentities.helpers.BlockEntityManager;
 import betterblockentities.helpers.BlockEntityTracker;
 
 /* sodium */
+import betterblockentities.helpers.ChunkUpdateManager;
 import net.caffeinemc.mods.sodium.client.render.SodiumWorldRenderer;
 import net.caffeinemc.mods.sodium.client.render.chunk.ChunkUpdateTypes;
 import net.caffeinemc.mods.sodium.client.render.chunk.RenderSection;
@@ -64,16 +65,6 @@ public abstract class WorldRendererMixin
             if (!ConfigManager.CONFIG.use_animations)
                 return;
 
-        /* add all blocks with ongoing breaking animation. do we need this????
-        for (Long2ObjectMap.Entry<SortedSet<BlockBreakingInfo>> entry : blockBreakingProgressions.long2ObjectEntrySet())
-        {
-            SortedSet<BlockBreakingInfo> set = entry.getValue();
-            for (BlockBreakingInfo info : set) {
-                BlockEntityTracker.blockBreakingMap.add(info.getPos());
-            }
-        }
-         */
-
             MatrixStack stack = new MatrixStack();
 
             SortedRenderLists renderLists = this.renderSectionManager.getRenderLists();
@@ -104,16 +95,9 @@ public abstract class WorldRendererMixin
                         }
                     }
 
-                    if (!BlockEntityTracker.sectionsToUpdate.isEmpty())
-                    {
-                        //need updating for 1.21.9, does not work, check SodiumWorldRenderer and chunk update/rebuild code
-                        for (RenderSection section : BlockEntityTracker.sectionsToUpdate) {
-                            section.setPendingUpdate(ChunkUpdateTypes.REBUILD, 0);
-                        }
-                        BlockEntityTracker.sectionsToUpdate.clear();
-                        this.renderSectionManager.updateChunks(true);
-                        this.renderSectionManager.markGraphDirty();
-                    }
+                    ChunkUpdateManager chunkManager = new ChunkUpdateManager(this.renderSectionManager);
+                    chunkManager.updateTrackedSections();
+                    chunkManager = null;
                 }
             }
         }
