@@ -60,45 +60,44 @@ public abstract class WorldRendererMixin
      helper classes
      */
     @Overwrite
-    public void extractBlockEntities(Camera camera, float tickDelta, Long2ObjectMap<SortedSet<BlockBreakingInfo>> progression, WorldRenderState levelRenderState) {
+    public void extractBlockEntities(Camera camera, float tickDelta, Long2ObjectMap<SortedSet<BlockBreakingInfo>> progression, WorldRenderState levelRenderState)
+    {
+        if (!ConfigManager.CONFIG.use_animations)
+            return;
+
+        MatrixStack stack = new MatrixStack();
+
+        SortedRenderLists renderLists = this.renderSectionManager.getRenderLists();
+        for (Iterator<ChunkRenderList> it = renderLists.iterator(); it.hasNext();)
         {
-            if (!ConfigManager.CONFIG.use_animations)
-                return;
+            ChunkRenderList renderList = it.next();
 
-            MatrixStack stack = new MatrixStack();
+            RenderRegion renderRegion = renderList.getRegion();
+            ByteIterator renderSectionIterator = renderList.sectionsWithEntitiesIterator();
 
-            SortedRenderLists renderLists = this.renderSectionManager.getRenderLists();
-            for (Iterator<ChunkRenderList> it = renderLists.iterator(); it.hasNext();)
+            if (renderSectionIterator != null)
             {
-                ChunkRenderList renderList = it.next();
-
-                RenderRegion renderRegion = renderList.getRegion();
-                ByteIterator renderSectionIterator = renderList.sectionsWithEntitiesIterator();
-
-                if (renderSectionIterator != null)
+                while (renderSectionIterator.hasNext())
                 {
-                    while (renderSectionIterator.hasNext())
-                    {
-                        int renderSectionId = renderSectionIterator.nextByteAsInt();
-                        RenderSection renderSection = renderRegion.getSection(renderSectionId);
-                        BlockEntity[] blockEntities = renderSection.getCulledBlockEntities();
+                    int renderSectionId = renderSectionIterator.nextByteAsInt();
+                    RenderSection renderSection = renderRegion.getSection(renderSectionId);
+                    BlockEntity[] blockEntities = renderSection.getCulledBlockEntities();
 
-                        if (blockEntities != null)
+                    if (blockEntities != null)
+                    {
+                        for (BlockEntity blockEntity : blockEntities)
                         {
-                            for (BlockEntity blockEntity : blockEntities)
-                            {
-                                BlockEntityManager manager = new BlockEntityManager(blockEntity, renderSection, tickDelta);
-                                if (manager.shouldRender())
-                                    this.extractBlockEntity(blockEntity, stack, camera, tickDelta, progression, levelRenderState);
-                                manager = null;
-                            }
+                            BlockEntityManager manager = new BlockEntityManager(blockEntity, renderSection, tickDelta);
+                            if (manager.shouldRender())
+                                this.extractBlockEntity(blockEntity, stack, camera, tickDelta, progression, levelRenderState);
+                            manager = null;
                         }
                     }
-
-                    ChunkUpdateManager chunkManager = new ChunkUpdateManager(this.renderSectionManager);
-                    chunkManager.updateTrackedSections();
-                    chunkManager = null;
                 }
+
+                ChunkUpdateManager chunkManager = new ChunkUpdateManager(this.renderSectionManager);
+                chunkManager.updateTrackedSections();
+                chunkManager = null;
             }
         }
     }
