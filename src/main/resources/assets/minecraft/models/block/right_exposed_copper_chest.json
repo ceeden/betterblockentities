@@ -3,7 +3,7 @@
   "texture_size": [64, 64],
   "textures": {
     "particle": "#chest",
-    "chest": "minecraft:entity/chest/normal_right"
+    "chest": "minecraft:entity/chest/copper_exposed_right"
   },
   "elements": [
     {

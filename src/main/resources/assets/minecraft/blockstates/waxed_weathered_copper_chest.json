@@ -1,0 +1,18 @@
+{
+  "variants": {
+    "type=single,facing=north": { "model": "minecraft:block/weathered_copper_chest" },
+    "type=single,facing=east":  { "model": "minecraft:block/weathered_copper_chest", "y": 90 },
+    "type=single,facing=south": { "model": "minecraft:block/weathered_copper_chest", "y": 180 },
+    "type=single,facing=west":  { "model": "minecraft:block/weathered_copper_chest", "y": 270 },
+
+    "type=left,facing=north": { "model": "minecraft:block/left_weathered_copper_chest" },
+    "type=left,facing=east":  { "model": "minecraft:block/left_weathered_copper_chest", "y": 90 },
+    "type=left,facing=south": { "model": "minecraft:block/left_weathered_copper_chest", "y": 180 },
+    "type=left,facing=west":  { "model": "minecraft:block/left_weathered_copper_chest", "y": 270 },
+
+    "type=right,facing=north": { "model": "minecraft:block/right_weathered_copper_chest" },
+    "type=right,facing=east":  { "model": "minecraft:block/right_weathered_copper_chest", "y": 90 },
+    "type=right,facing=south": { "model": "minecraft:block/right_weathered_copper_chest", "y": 180 },
+    "type=right,facing=west":  { "model": "minecraft:block/right_weathered_copper_chest", "y": 270 }
+  }
+}
