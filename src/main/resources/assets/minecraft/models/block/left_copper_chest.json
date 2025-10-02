@@ -28,7 +28,7 @@
         "east": {"uv": [0, 5.75, 3.5, 7], "rotation": 180, "texture": "#chest"},
         "south": {"uv": [3.5, 3.5, 7.25, 4.75], "rotation": 180, "texture": "#chest"},
         "west": {"uv": [7.25, 3.5, 10.75, 4.75], "rotation": 180, "texture": "#chest"},
-        "up": {"uv": [7.25, 4.75, 3.5, 8.25], "texture": "#chest"}
+        "up": {"uv": [11, 0, 7.25, 3.5], "texture": "#chest"}
       }
     },
     {
