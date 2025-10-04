@@ -9,6 +9,11 @@
       "type": "directory",
       "source": "entity/shulker",
       "prefix": "entity/shulker/"
+    },
+    {
+      "type": "directory",
+      "source": "entity/bell",
+      "prefix": "entity/bell/"
     }
   ]
 }

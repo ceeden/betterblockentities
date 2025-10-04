@@ -9,7 +9,9 @@
     "EnderChestBlockMixin",
     "RenderLayersMixin",
     "ShulkerBoxBlockMixin",
-    "WorldRendererMixin"
+    "WorldRendererMixin",
+    "BellBlockEntityRendererMixin",
+    "BellBlockEntityRenderStateMixin"
   ],
   "server": [],
   "injectors": {
