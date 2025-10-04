@@ -15,7 +15,3 @@ minecraft versions<br/><br/>
 The mod is still in a core developing stage so there may be bugs and such that has not yet been discovered. Because Im currently 
 alone on this project and low on free time I can't promise super fast updates and bug fixes. I will be working on the mod when I can
 and review pull requests to further improve upon the mod.<br/><br/>
-Some things that currently has to be fixed: <br/>
--Adding support for vanilla Fabric<br/>
--Fixing double chests (UV mappings and adding the correct textures)<br/>
--Add support for signs, pots, etc.. (and all the new Block Entities in 1.21.9)<br/><br/>
