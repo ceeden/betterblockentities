@@ -25,8 +25,8 @@ dependencies {
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
     // mod menu because config screen access from another place
-    //modApi "com.terraformersmc:modmenu:${project.modmenu_version}"
-    //modRuntimeOnly "com.terraformersmc:modmenu:${project.modmenu_version}"
+    modApi "com.terraformersmc:modmenu:${project.modmenu_version}"
+    modRuntimeOnly "com.terraformersmc:modmenu:${project.modmenu_version}"
 
     // sodium for compatibility
     modCompileOnlyApi "maven.modrinth:sodium:${project.sodium_version}"
