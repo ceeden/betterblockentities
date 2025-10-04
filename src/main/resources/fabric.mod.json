@@ -21,6 +21,9 @@
   "entrypoints": {
     "client": [
       "betterblockentities.BetterBlockEntities"
+    ],
+    "modmenu": [
+      "betterblockentities.gui.ModMenu"
     ]
   },
   "fabric": {
