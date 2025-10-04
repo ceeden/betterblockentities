@@ -26,6 +26,8 @@ public class BlockEntityManager
             return true;
         else if (blockEntity instanceof BellBlockEntity)
             return true;
+        else if (blockEntity instanceof DecoratedPotBlockEntity)
+            return true;
         return false;
     }
 
@@ -40,6 +42,16 @@ public class BlockEntityManager
             animationProgress = ((ShulkerBoxBlockEntity)blockEntity).getAnimationProgress(tickDelta);
         else if (blockEntity instanceof BellBlockEntity)
             animating = ((BellBlockEntity)blockEntity).ringing;
+        else if (blockEntity instanceof DecoratedPotBlockEntity)
+        {
+            if (((DecoratedPotBlockEntity)blockEntity).lastWobbleType != null)
+            {
+                long now = blockEntity.getWorld().getTime();
+                long wobble_time = ((DecoratedPotBlockEntity)blockEntity).lastWobbleTime;
+                int lengthInTicks = ((DecoratedPotBlockEntity)blockEntity).lastWobbleType.lengthInTicks;
+                animating = now - wobble_time < lengthInTicks;
+            }
+        }
 
         if (animationProgress > 0.00 || animating)
             return true;

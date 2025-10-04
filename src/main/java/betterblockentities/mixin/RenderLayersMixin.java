@@ -17,7 +17,7 @@ public class RenderLayersMixin
     @Inject(method = "getBlockLayer", at = @At("HEAD"), cancellable = true)
     private static void ForceBlockLayer(BlockState state, CallbackInfoReturnable<BlockRenderLayer> cir)
     {
-        if (state.getBlock() instanceof ShulkerBoxBlock || state.getBlock() instanceof BellBlock)
+        if (state.getBlock() instanceof ShulkerBoxBlock || state.getBlock() instanceof DecoratedPotBlock)
             cir.setReturnValue(BlockRenderLayer.TRANSLUCENT);
     }
 }
