@@ -17,7 +17,7 @@ public abstract class AbstractBlockMixin
     {
         Block block = state.getBlock();
         if (block instanceof ChestBlock || block instanceof EnderChestBlock || block instanceof ShulkerBoxBlock || block instanceof TrappedChestBlock
-        || block instanceof BellBlock)
+        || block instanceof BellBlock || block instanceof DecoratedPotBlock)
             cir.setReturnValue(BlockRenderType.MODEL);
     }
 }

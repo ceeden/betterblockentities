@@ -14,6 +14,11 @@
       "type": "directory",
       "source": "entity/bell",
       "prefix": "entity/bell/"
+    },
+    {
+      "type": "directory",
+      "source": "entity/decorated_pot",
+      "prefix": "entity/decorated_pot/"
     }
   ]
 }
