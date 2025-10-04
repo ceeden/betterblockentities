@@ -88,7 +88,7 @@ public class BlockEntityManager
         {
             BlockEntityTracker.animMap.remove(blockEntity.getPos());
             BlockEntityTracker.sectionsToUpdate.add(renderSection);
-            BlockEntityTracker.extraRenderPasses.put(blockEntity.getPos(), 20);
+            BlockEntityTracker.extraRenderPasses.put(blockEntity.getPos(), ConfigManager.CONFIG.smoothness_slider);
         }
         if (BlockEntityTracker.extraRenderPasses.containsKey(blockEntity.getPos()))
         {

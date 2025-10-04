@@ -43,7 +43,7 @@ public class ConfigScreen extends GameOptionsScreen {
                 "Smoothness",
                 SimpleOption.emptyTooltip(),
                 (text, value) -> Text.of(text.getString() + ": " + value),
-                new SimpleOption.ValidatingIntSliderCallbacks(0, 10),
+                new SimpleOption.ValidatingIntSliderCallbacks(0, 20),
                 ConfigManager.CONFIG.smoothness_slider,
                 value -> ConfigManager.CONFIG.smoothness_slider = value
         );
