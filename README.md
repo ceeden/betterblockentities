@@ -17,6 +17,5 @@ alone on this project and low on free time I can't promise super fast updates an
 and review pull requests to further improve upon the mod.<br/><br/>
 Some things that currently has to be fixed: <br/>
 -Adding support for vanilla Fabric<br/>
--Fix Bell Floor meshed model<br/>
--Fix lighting bug for all block entities<br/>
--Add support for more block entities<br/>
+-Fixing double chests (UV mappings and adding the correct textures)<br/>
+-Add support for signs, pots, etc.. (and all the new Block Entities in 1.21.9)<br/><br/>

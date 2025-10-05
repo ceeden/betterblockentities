@@ -1,6 +1,7 @@
 package betterblockentities.mixin;
 
 /* local */
+import betterblockentities.helpers.BlockEntityManager;
 import betterblockentities.helpers.BlockEntityTracker;
 
 /* minecraft */
@@ -22,13 +23,9 @@ public class BlockRendererMixin
     @Inject(method = "renderModel", at = @At("HEAD"), cancellable = true)
     private void IgnoreAnimatingBlockEntity(BlockStateModel model, BlockState state, BlockPos pos, BlockPos origin, CallbackInfo ci)
     {
-        if (state.getBlock() instanceof BellBlock)
-        {
-            var idk = 0;
+        if (BlockEntityManager.blockSanityCheck(state.getBlock())) {
+            boolean anim = BlockEntityTracker.animMap.contains(pos);
+            if (anim) ci.cancel();
         }
-
-
-        boolean anim = BlockEntityTracker.animMap.contains(pos);
-        if (anim) ci.cancel();
     }
 }

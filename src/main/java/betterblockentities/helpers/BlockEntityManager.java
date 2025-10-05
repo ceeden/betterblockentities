@@ -2,7 +2,7 @@ package betterblockentities.helpers;
 
 import betterblockentities.gui.ConfigManager;
 import net.caffeinemc.mods.sodium.client.render.chunk.RenderSection;
-import net.minecraft.block.CopperChestBlock;
+import net.minecraft.block.*;
 import net.minecraft.block.entity.*;
 
 public class BlockEntityManager
@@ -18,7 +18,20 @@ public class BlockEntityManager
         this.tickDelta = tickDelta;
     }
 
-    private boolean sanityCheck()
+    public static boolean blockSanityCheck(Block block)
+    {
+        if (block instanceof ChestBlock || block instanceof EnderChestBlock)
+            return true;
+        else if (block instanceof ShulkerBoxBlock)
+            return true;
+        else if (block instanceof BellBlock)
+            return true;
+        else if (block instanceof DecoratedPotBlock)
+            return true;
+        return false;
+    }
+
+    private boolean entitySanityCheck()
     {
         if (blockEntity instanceof ChestBlockEntity || blockEntity instanceof EnderChestBlockEntity)
             return true;
@@ -61,7 +74,7 @@ public class BlockEntityManager
     public boolean shouldRender()
     {
         //render normal blocks regularly
-        if (!sanityCheck())
+        if (!entitySanityCheck())
             return true;
 
         if (isAnimating()) {
