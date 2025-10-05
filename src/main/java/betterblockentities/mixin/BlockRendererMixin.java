@@ -5,10 +5,7 @@ import betterblockentities.helpers.BlockEntityTracker;
 
 /* minecraft */
 import net.caffeinemc.mods.sodium.client.render.chunk.compile.pipeline.BlockRenderer;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.CopperChestBlock;
-import net.minecraft.block.DecoratedPotBlock;
-import net.minecraft.block.OxidizableCopperChestBlock;
+import net.minecraft.block.*;
 import net.minecraft.client.render.model.BlockStateModel;
 import net.minecraft.util.math.BlockPos;
 
@@ -25,7 +22,7 @@ public class BlockRendererMixin
     @Inject(method = "renderModel", at = @At("HEAD"), cancellable = true)
     private void IgnoreAnimatingBlockEntity(BlockStateModel model, BlockState state, BlockPos pos, BlockPos origin, CallbackInfo ci)
     {
-        if (state.getBlock() instanceof DecoratedPotBlock)
+        if (state.getBlock() instanceof BellBlock)
         {
             var idk = 0;
         }

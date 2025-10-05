@@ -1,18 +1,18 @@
 {
   "variants": {
     "attachment=ceiling,facing=east": {
-      "model": "betterblockentities:block/bell_ceiling",
+      "model": "minecraft:block/bell_ceiling",
       "y": 90
     },
     "attachment=ceiling,facing=north": {
-      "model": "betterblockentities:block/bell_ceiling"
+      "model": "minecraft:block/bell_ceiling"
     },
     "attachment=ceiling,facing=south": {
-      "model": "betterblockentities:block/bell_ceiling",
+      "model": "minecraft:block/bell_ceiling",
       "y": 180
     },
     "attachment=ceiling,facing=west": {
-      "model": "betterblockentities:block/bell_ceiling",
+      "model": "minecraft:block/bell_ceiling",
       "y": 270
     },
     "attachment=double_wall,facing=east": {
@@ -31,18 +31,18 @@
       "y": 180
     },
     "attachment=floor,facing=east": {
-      "model": "minecraft:block/bell_floor",
+      "model": "minecraft:block/bell_floor_override",
       "y": 90
     },
     "attachment=floor,facing=north": {
-      "model": "minecraft:block/bell_floor"
+      "model": "minecraft:block/bell_floor_override"
     },
     "attachment=floor,facing=south": {
-      "model": "minecraft:block/bell_floor",
+      "model": "minecraft:block/bell_floor_override",
       "y": 180
     },
     "attachment=floor,facing=west": {
-      "model": "minecraft:block/bell_floor",
+      "model": "minecraft:block/bell_floor_override",
       "y": 270
     },
     "attachment=single_wall,facing=east": {
