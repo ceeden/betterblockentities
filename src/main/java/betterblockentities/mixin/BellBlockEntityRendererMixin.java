@@ -2,24 +2,30 @@ package betterblockentities.mixin;
 
 import betterblockentities.ModelLoader;
 import betterblockentities.helpers.BellRenderStateAccessor;
+import net.caffeinemc.mods.sodium.client.render.SodiumWorldRenderer;
+import net.caffeinemc.mods.sodium.client.render.chunk.compile.executor.ChunkBuilder;
 import net.minecraft.block.BellBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BellBlockEntity;
 import net.minecraft.block.enums.Attachment;
-import net.minecraft.client.render.OverlayTexture;
-import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.*;
 import net.minecraft.client.render.block.entity.BellBlockEntityRenderer;
 import net.minecraft.client.render.block.entity.state.BellBlockEntityRenderState;
 import net.minecraft.client.render.command.ModelCommandRenderer;
 import net.minecraft.client.render.command.OrderedRenderCommandQueue;
 import net.minecraft.client.render.model.BlockStateModel;
 import net.minecraft.client.render.state.CameraRenderState;
+import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.RotationAxis;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.LightType;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -27,6 +33,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(BellBlockEntityRenderer.class)
 public class BellBlockEntityRendererMixin
 {
+    @Shadow @Final public static SpriteIdentifier BELL_BODY_TEXTURE;
+
     @Inject(method = "updateRenderState", at = @At("TAIL"))
     private void updateState(BellBlockEntity bell, BellBlockEntityRenderState renderState, float f, Vec3d vec3d, @Nullable ModelCommandRenderer.CrumblingOverlayCommand overlay, CallbackInfo ci)
     {
@@ -36,7 +44,7 @@ public class BellBlockEntityRendererMixin
         ((BellRenderStateAccessor)renderState).setMountFacing(blockState.get(BellBlock.FACING));
     }
 
-    @Inject(method = "render", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "render", at = @At("TAIL"), cancellable = true)
     private void renderInject(BellBlockEntityRenderState state, MatrixStack matrices, OrderedRenderCommandQueue queue, CameraRenderState camera, CallbackInfo ci)
     {
         BellRenderStateAccessor accessor = (BellRenderStateAccessor) (Object) state;
@@ -74,7 +82,8 @@ public class BellBlockEntityRendererMixin
             case DOUBLE_WALL -> model = ModelLoader.bell_between_walls;
         }
 
-        queue.submitBlockStateModel(matrices, RenderLayer.getSolid(), model, 0.1f, 0.1f, 0.1f, state.lightmapCoordinates, OverlayTexture.DEFAULT_UV, 0);
+        RenderLayer layer = BELL_BODY_TEXTURE.getRenderLayer(RenderLayer::getEntitySolid);
+        queue.submitBlockStateModel(matrices, layer, model, 1.0f, 1.0f, 1.0f, state.lightmapCoordinates, OverlayTexture.DEFAULT_UV, 0);
         matrices.pop();
     }
 }
