@@ -15,20 +15,16 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Environment(EnvType.CLIENT)
 public class ModelLoader implements ModelLoadingPlugin
 {
-    public static BlockStateModel bell_wall;
-    public static BlockStateModel bell_floor;
-    public static BlockStateModel bell_ceiling;
-    public static BlockStateModel bell_between_walls;
-
-    public static List<BakedQuad> bell_wall_quads;
-    public static List<BakedQuad> bell_floor_quads;
-    public static List<BakedQuad> bell_ceiling_quads;
-    public static List<BakedQuad> bell_between_walls_quads;
+    public static List<BlockModelPart> bell_wall_parts = new ArrayList<>();
+    public static List<BlockModelPart> bell_floor_parts = new ArrayList<>();
+    public static List<BlockModelPart> bell_ceiling_parts = new ArrayList<>();
+    public static List<BlockModelPart> bell_between_walls_parts = new ArrayList<>();
 
     private static final Random random = Random.create();
 
@@ -54,13 +50,25 @@ public class ModelLoader implements ModelLoadingPlugin
         pluginContext.addModel(BELL_BETWEEN_WALLS_KEY, SimpleUnbakedExtraModel.blockStateModel(BELL_BETWEEN_WALLS_ID));
     }
 
-    private static void getQuads(BlockStateModel model, List<BakedQuad> Quads)
-    {
+    private static void getQuads(BlockStateModel model, List<BakedQuad> quadList) {
         for (BlockModelPart part : model.getParts(random))
         {
-            List<BakedQuad> quads = part.getQuads(Direction.random(random));
-            Quads.addAll(quads);
+            for (Direction dir : Direction.values())
+            {
+                List<BakedQuad> faceQuads = part.getQuads(dir);
+                if (faceQuads != null && !faceQuads.isEmpty()) {
+                    quadList.addAll(faceQuads);
+                }
+            }
+            List<BakedQuad> sideless = part.getQuads(null);
+            if (sideless != null && !sideless.isEmpty()) {
+                quadList.addAll(sideless);
+            }
         }
+    }
+
+    private static void getParts(BlockStateModel model, List<BlockModelPart> partList) {
+        partList.addAll(model.getParts(random));
     }
 
     public static void loadModels()
@@ -72,15 +80,15 @@ public class ModelLoader implements ModelLoadingPlugin
         if (manager == null)
             return;
 
-        bell_wall = manager.getModel(BELL_WALL_KEY);
-        bell_floor = manager.getModel(BELL_FLOOR_KEY);
-        bell_ceiling = manager.getModel(BELL_CEILING_KEY);
-        bell_between_walls = manager.getModel(BELL_BETWEEN_WALLS_KEY);
+        BlockStateModel bell_wall = manager.getModel(BELL_WALL_KEY);
+        BlockStateModel bell_floor = manager.getModel(BELL_FLOOR_KEY);
+        BlockStateModel bell_ceiling = manager.getModel(BELL_CEILING_KEY);
+        BlockStateModel bell_between_walls = manager.getModel(BELL_BETWEEN_WALLS_KEY);
 
-        getQuads(bell_wall, bell_wall_quads);
-        getQuads(bell_floor, bell_floor_quads);
-        getQuads(bell_ceiling, bell_ceiling_quads);
-        getQuads(bell_between_walls, bell_between_walls_quads);
+        getParts(bell_wall, bell_wall_parts);
+        getParts(bell_floor, bell_floor_parts);
+        getParts(bell_ceiling, bell_ceiling_parts);
+        getParts(bell_between_walls, bell_between_walls_parts);
 
         modelsLoaded = true;
     }

@@ -10,6 +10,7 @@
     "EnderChestBlockMixin",
     "RenderLayersMixin",
     "ShulkerBoxBlockMixin",
+    "BellBlockEntityRendererMixin",
     "WorldRendererMixin"
   ],
   "server": [],
@@ -17,6 +18,6 @@
     "defaultRequire": 1
   },
   "client": [
-    "BellBlockEntityRendererMixin"
+
   ]
 }
