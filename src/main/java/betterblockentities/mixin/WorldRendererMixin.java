@@ -7,7 +7,7 @@ import betterblockentities.helpers.BlockEntityTracker;
 
 /* sodium */
 import net.caffeinemc.mods.sodium.client.render.SodiumWorldRenderer;
-import net.caffeinemc.mods.sodium.client.render.chunk.ChunkUpdateType;
+import net.caffeinemc.mods.sodium.client.render.chunk.ChunkUpdateTypes;
 import net.caffeinemc.mods.sodium.client.render.chunk.RenderSection;
 import net.caffeinemc.mods.sodium.client.render.chunk.RenderSectionManager;
 import net.caffeinemc.mods.sodium.client.render.chunk.lists.ChunkRenderList;
@@ -94,7 +94,7 @@ public abstract class WorldRendererMixin
                 return;
 
             for (RenderSection section : BlockEntityTracker.sectionsToUpdate) {
-                section.setPendingUpdate(ChunkUpdateType.IMPORTANT_REBUILD);
+                section.setPendingUpdate(ChunkUpdateTypes.REBUILD, 0);
             }
             BlockEntityTracker.sectionsToUpdate.clear();
             this.renderSectionManager.updateChunks(true);
