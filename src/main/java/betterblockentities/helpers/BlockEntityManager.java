@@ -2,13 +2,17 @@ package betterblockentities.helpers;
 
 import betterblockentities.gui.ConfigManager;
 import net.caffeinemc.mods.sodium.client.render.chunk.RenderSection;
+import net.minecraft.block.*;
 import net.minecraft.block.entity.*;
+import java.util.Random;
 
 public class BlockEntityManager
 {
     private static BlockEntity blockEntity;
     private static RenderSection renderSection;
     private static float tickDelta;
+
+    private static Random random = new Random();
 
     public BlockEntityManager(BlockEntity blockEntity, RenderSection renderSection, float tickDelta)
     {
@@ -17,13 +21,28 @@ public class BlockEntityManager
         this.tickDelta = tickDelta;
     }
 
-    private boolean sanityCheck()
+    public static boolean blockSanityCheck(Block block)
     {
-        if (blockEntity instanceof ChestBlockEntity || blockEntity instanceof EnderChestBlockEntity || blockEntity instanceof TrappedChestBlockEntity)
+        if (block instanceof ChestBlock || block instanceof EnderChestBlock)
+            return true;
+        else if (block instanceof ShulkerBoxBlock)
+            return true;
+        else if (block instanceof BellBlock)
+            return true;
+        else if (block instanceof DecoratedPotBlock)
+            return true;
+        return false;
+    }
+
+    private boolean entitySanityCheck()
+    {
+        if (blockEntity instanceof ChestBlockEntity || blockEntity instanceof EnderChestBlockEntity)
             return true;
         else if (blockEntity instanceof ShulkerBoxBlockEntity)
             return true;
         else if (blockEntity instanceof BellBlockEntity)
+            return true;
+        else if (blockEntity instanceof DecoratedPotBlockEntity)
             return true;
         return false;
     }
@@ -33,12 +52,22 @@ public class BlockEntityManager
         float animationProgress = 0;
         boolean animating = false;
 
-        if (blockEntity instanceof ChestBlockEntity || blockEntity instanceof EnderChestBlockEntity || blockEntity instanceof TrappedChestBlockEntity)
+        if (blockEntity instanceof ChestBlockEntity || blockEntity instanceof EnderChestBlockEntity)
             animationProgress = ((LidOpenable)blockEntity).getAnimationProgress(tickDelta);
         else if (blockEntity instanceof ShulkerBoxBlockEntity)
             animationProgress = ((ShulkerBoxBlockEntity)blockEntity).getAnimationProgress(tickDelta);
         else if (blockEntity instanceof BellBlockEntity)
             animating = ((BellBlockEntity)blockEntity).ringing;
+        else if (blockEntity instanceof DecoratedPotBlockEntity)
+        {
+            if (((DecoratedPotBlockEntity)blockEntity).lastWobbleType != null)
+            {
+                long now = blockEntity.getWorld().getTime();
+                long wobble_time = ((DecoratedPotBlockEntity)blockEntity).lastWobbleTime;
+                int lengthInTicks = ((DecoratedPotBlockEntity)blockEntity).lastWobbleType.lengthInTicks;
+                animating = now - wobble_time < lengthInTicks;
+            }
+        }
 
         if (animationProgress > 0.00 || animating)
             return true;
@@ -48,7 +77,7 @@ public class BlockEntityManager
     public boolean shouldRender()
     {
         //render normal blocks regularly
-        if (!sanityCheck())
+        if (!entitySanityCheck())
             return true;
 
         if (isAnimating()) {

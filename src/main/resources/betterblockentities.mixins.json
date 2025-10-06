@@ -17,5 +17,6 @@
     "defaultRequire": 1
   },
   "client": [
+    "BellBlockEntityRendererMixin"
   ]
 }
