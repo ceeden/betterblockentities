@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=north": { "model": "minecraft:block/decorated_pot", "y": 0 },
+    "facing=east":  { "model": "minecraft:block/decorated_pot", "y": 90 },
+    "facing=south": { "model": "minecraft:block/decorated_pot", "y": 180 },
+    "facing=west":  { "model": "minecraft:block/decorated_pot", "y": 270 }
+  }
+}
