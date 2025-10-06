@@ -1,18 +1,10 @@
 {
   "variants": {
-    "attachment=floor,facing=north":  { "model": "mymod:block/yellow_shulker_box", "y": 0 },
-    "attachment=floor,facing=east":   { "model": "mymod:block/yellow_shulker_box", "y": 90 },
-    "attachment=floor,facing=south":  { "model": "mymod:block/yellow_shulker_box", "y": 180 },
-    "attachment=floor,facing=west":   { "model": "mymod:block/yellow_shulker_box", "y": 270 },
-
-    "attachment=ceiling,facing=north": { "model": "mymod:block/yellow_shulker_box", "x": 180, "y": 0 },
-    "attachment=ceiling,facing=east":  { "model": "mymod:block/yellow_shulker_box", "x": 180, "y": 90 },
-    "attachment=ceiling,facing=south": { "model": "mymod:block/yellow_shulker_box", "x": 180, "y": 180 },
-    "attachment=ceiling,facing=west":  { "model": "mymod:block/yellow_shulker_box", "x": 180, "y": 270 },
-
-    "attachment=wall,facing=north": { "model": "mymod:block/yellow_shulker_box", "x": 90, "y": 0 },
-    "attachment=wall,facing=east":  { "model": "mymod:block/yellow_shulker_box", "x": 90, "y": 90 },
-    "attachment=wall,facing=south": { "model": "mymod:block/yellow_shulker_box", "x": 90, "y": 180 },
-    "attachment=wall,facing=west":  { "model": "mymod:block/yellow_shulker_box", "x": 90, "y": 270 }
+    "facing=up":    { "model": "minecraft:block/yellow_shulker_box", "x": 0, "y": 0 },
+    "facing=down":  { "model": "minecraft:block/yellow_shulker_box", "x": 180, "y": 0 },
+    "facing=north": { "model": "minecraft:block/yellow_shulker_box", "x": 90, "y": 0 },
+    "facing=south": { "model": "minecraft:block/yellow_shulker_box", "x": 90, "y": 180 },
+    "facing=west":  { "model": "minecraft:block/yellow_shulker_box", "x": 90, "y": 270 },
+    "facing=east":  { "model": "minecraft:block/yellow_shulker_box", "x": 90, "y": 90 }
   }
 }
