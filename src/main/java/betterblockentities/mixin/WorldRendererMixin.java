@@ -65,41 +65,43 @@ public abstract class WorldRendererMixin
             return;
 
         SortedRenderLists renderLists = this.renderSectionManager.getRenderLists();
-        for (Iterator<ChunkRenderList> it = renderLists.iterator(); it.hasNext(); )
+        for (Iterator<ChunkRenderList> it = renderLists.iterator(); it.hasNext();)
         {
             ChunkRenderList renderList = it.next();
+
             RenderRegion renderRegion = renderList.getRegion();
             ByteIterator renderSectionIterator = renderList.sectionsWithEntitiesIterator();
 
-            if (renderSectionIterator == null)
-                return;
-
-            while (renderSectionIterator.hasNext())
+            if (renderSectionIterator != null)
             {
-                int renderSectionId = renderSectionIterator.nextByteAsInt();
-                RenderSection renderSection = renderRegion.getSection(renderSectionId);
-                BlockEntity[] blockEntities = renderSection.getCulledBlockEntities();
-
-                if (blockEntities == null)
-                    return;
-
-                for (BlockEntity blockEntity : blockEntities)
+                while (renderSectionIterator.hasNext())
                 {
-                    BlockEntityManager manager = new BlockEntityManager(blockEntity, renderSection, tickDelta);
-                    if (manager.shouldRender())
-                        this.renderBlockEntity(matrices, bufferBuilders, blockBreakingProgressions, tickDelta, immediate, x, y, z, blockEntityRenderer, blockEntity, player, isGlowing);
-                    manager = null;
+                    int renderSectionId = renderSectionIterator.nextByteAsInt();
+                    RenderSection renderSection = renderRegion.getSection(renderSectionId);
+                    BlockEntity[] blockEntities = renderSection.getCulledBlockEntities();
+
+                    if (blockEntities != null)
+                    {
+                        for (BlockEntity blockEntity : blockEntities)
+                        {
+                            BlockEntityManager manager = new BlockEntityManager(blockEntity, renderSection, tickDelta);
+                            if (manager.shouldRender())
+                                this.renderBlockEntity(matrices, bufferBuilders, blockBreakingProgressions, tickDelta, immediate, x, y, z, blockEntityRenderer, blockEntity, player, isGlowing);
+                            manager = null;
+                        }
+                    }
+                }
+
+                if (!BlockEntityTracker.sectionsToUpdate.isEmpty())
+                {
+                    for (RenderSection section : BlockEntityTracker.sectionsToUpdate) {
+                        section.setPendingUpdate(ChunkUpdateTypes.REBUILD, 0);
+                    }
+                    BlockEntityTracker.sectionsToUpdate.clear();
+                    this.renderSectionManager.updateChunks(true);
+                    this.renderSectionManager.markGraphDirty();
                 }
             }
-            if (BlockEntityTracker.sectionsToUpdate.isEmpty())
-                return;
-
-            for (RenderSection section : BlockEntityTracker.sectionsToUpdate) {
-                section.setPendingUpdate(ChunkUpdateTypes.REBUILD, 0);
-            }
-            BlockEntityTracker.sectionsToUpdate.clear();
-            this.renderSectionManager.updateChunks(true);
-            this.renderSectionManager.markGraphDirty();
         }
     }
 }
