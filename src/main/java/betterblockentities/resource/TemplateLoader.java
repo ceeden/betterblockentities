@@ -10,7 +10,7 @@ import java.util.*;
 
 public class TemplateLoader
 {
-    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
+    private static final Gson GSON = new GsonBuilder().disableHtmlEscaping().create();
 
     public JsonObject loadTemplate(String template) {
         try (InputStream input = TemplateLoader.class.getResourceAsStream(
@@ -26,7 +26,6 @@ public class TemplateLoader
     public List<ElementRecord> readTemplateElements(JsonObject templateRoot) {
         List<ElementRecord> elements = new ArrayList<>();
         JsonArray arr = templateRoot.getAsJsonArray("elements");
-
         for (JsonElement el : arr) {
             JsonObject obj = el.getAsJsonObject();
             List<Float> from = jsonArrayToFloatList(obj.getAsJsonArray("from"));
