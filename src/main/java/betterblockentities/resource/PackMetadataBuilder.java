@@ -32,9 +32,10 @@ public class PackMetadataBuilder
 
         JsonObject packJson = new JsonObject();
         JsonObject packInfo = new JsonObject();
-        packInfo.add("min_format", GSON.toJsonTree(new int[]{version, 0}));
-        packInfo.add("max_format", GSON.toJsonTree(new int[]{version, 0}));
+
+        packInfo.addProperty("pack_format", version);
         packInfo.addProperty("description", "BBE Resources");
+
         packJson.add("pack", packInfo);
 
         return GSON.toJson(packJson).getBytes(StandardCharsets.UTF_8);
