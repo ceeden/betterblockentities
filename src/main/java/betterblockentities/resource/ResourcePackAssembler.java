@@ -1,5 +1,6 @@
 package betterblockentities.resource;
 
+/* java/misc */
 import java.io.*;
 import java.util.*;
 import java.util.zip.ZipEntry;

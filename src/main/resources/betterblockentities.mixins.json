@@ -4,14 +4,15 @@
   "compatibilityLevel": "JAVA_21",
   "mixins": [
     "AbstractBlockMixin",
+    "BellBlockEntityRendererMixin",
+    "BellBlockEntityRenderStateMixin",
     "BlockRendererMixin",
     "ChestBlockMixin",
     "EnderChestBlockMixin",
     "RenderLayersMixin",
+    "ResourcePackManagerMixin",
     "ShulkerBoxBlockMixin",
-    "WorldRendererMixin",
-    "BellBlockEntityRendererMixin",
-    "BellBlockEntityRenderStateMixin"
+    "WorldRendererMixin"
   ],
   "server": [],
   "injectors": {

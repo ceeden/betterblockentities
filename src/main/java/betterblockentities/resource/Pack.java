@@ -1,16 +1,19 @@
-package betterblockentities.helpers;
+package betterblockentities.resource;
 
+/* gson */
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.serialization.JsonOps;
+
+/* minecraft */
 import net.minecraft.resource.*;
 import net.minecraft.resource.metadata.ResourceMetadataSerializer;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.JsonHelper;
-import org.jetbrains.annotations.Nullable;
 
+/* java/misc */
+import org.jetbrains.annotations.Nullable;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,8 +34,6 @@ public class Pack implements ResourcePack
         this.packData = packData;
     }
 
-    // ===================== Resource Access ===================== //
-
     @Override
     public @Nullable InputSupplier<InputStream> openRoot(String... segments) {
         String path = String.join("/", segments);
@@ -50,7 +51,6 @@ public class Pack implements ResourcePack
             ZipEntry entry;
             while ((entry = zip.getNextEntry()) != null) {
                 if (entry.getName().equals(path)) {
-                    // Copy contents so we can return a fresh stream
                     byte[] data = zip.readAllBytes();
                     return () -> new ByteArrayInputStream(data);
                 }
@@ -61,11 +61,8 @@ public class Pack implements ResourcePack
         return null;
     }
 
-    // ===================== Resource Discovery ===================== //
-
     @Override
-    public void findResources(ResourceType type, String namespace, String prefix,
-                              ResultConsumer consumer) {
+    public void findResources(ResourceType type, String namespace, String prefix, ResultConsumer consumer) {
         String base = type.getDirectory() + "/" + namespace + "/" + prefix;
         try (ZipInputStream zip = new ZipInputStream(new ByteArrayInputStream(packData))) {
             ZipEntry entry;
@@ -103,8 +100,6 @@ public class Pack implements ResourcePack
         return namespaces;
     }
 
-    // ===================== Metadata ===================== //
-
     @Override
     public @Nullable <T> T parseMetadata(ResourceMetadataSerializer<T> metadataSerializer) throws IOException
     {
@@ -116,8 +111,6 @@ public class Pack implements ResourcePack
             if (!json.has(metadataSerializer.name())) {
                 return null;
             }
-
-            // Use the codec to decode the section
             JsonElement section = json.get(metadataSerializer.name());
             var result = metadataSerializer.codec().parse(JsonOps.INSTANCE, section);
             return result.result().orElse(null);
@@ -125,19 +118,14 @@ public class Pack implements ResourcePack
     }
 
     @Override
-    public ResourcePackInfo getInfo()
-    {
-        // You can return null if your Minecraft version doesn’t require this
-        return new ResourcePackInfo(
-                "betterblockentities-generated",
-                Text.literal("Better-Block-Entities"),
+    public ResourcePackInfo getInfo() {
+        return new ResourcePackInfo("betterblockentities-generated",
+                Text.literal("Better Block Entities"),
                 ResourcePackSource.BUILTIN,
                 Optional.empty()
         );
     }
 
     @Override
-    public void close() {
-        // Nothing to close (fully in memory)
-    }
+    public void close() {}
 }

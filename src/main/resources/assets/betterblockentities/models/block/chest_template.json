@@ -3,7 +3,7 @@
   "texture_size": [64, 64],
   "textures": {
     "particle": "#chest",
-    "chest": "minecraft:entity/chest/trapped"
+    "chest": "minecraft:entity/chest/normal"
   },
   "elements": [
     {

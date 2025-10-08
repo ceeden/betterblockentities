@@ -1,6 +1,6 @@
 package betterblockentities.helpers;
 
-import net.minecraft.block.BellBlock;
+/* minecraft */
 import net.minecraft.block.enums.Attachment;
 import net.minecraft.util.math.Direction;
 

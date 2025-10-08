@@ -1,10 +1,14 @@
 package betterblockentities.resource;
 
+/* gson */
 import com.google.gson.*;
+
+/* minecraft */
 import net.minecraft.SharedConstants;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.resource.PackVersion;
 
+/* java/misc */
 import java.io.InputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;

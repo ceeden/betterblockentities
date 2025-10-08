@@ -1,6 +1,9 @@
 package betterblockentities.resource;
 
+/* gson */
 import com.google.gson.*;
+
+/* java/misc */
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.*;

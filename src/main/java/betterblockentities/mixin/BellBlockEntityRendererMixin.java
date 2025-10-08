@@ -1,9 +1,10 @@
 package betterblockentities.mixin;
 
+/* local */
 import betterblockentities.ModelLoader;
 import betterblockentities.helpers.BellRenderStateAccessor;
-import net.caffeinemc.mods.sodium.client.render.SodiumWorldRenderer;
-import net.caffeinemc.mods.sodium.client.render.chunk.compile.executor.ChunkBuilder;
+
+/* minecraft */
 import net.minecraft.block.BellBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BellBlockEntity;
@@ -17,12 +18,11 @@ import net.minecraft.client.render.model.BlockStateModel;
 import net.minecraft.client.render.state.CameraRenderState;
 import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.RotationAxis;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.LightType;
-import org.jetbrains.annotations.Nullable;
+
+/* mixin */
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -30,14 +30,16 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+/* java/misc */
+import org.jetbrains.annotations.Nullable;
+
 @Mixin(BellBlockEntityRenderer.class)
 public class BellBlockEntityRendererMixin
 {
     @Shadow @Final public static SpriteIdentifier BELL_BODY_TEXTURE;
 
     @Inject(method = "updateRenderState", at = @At("TAIL"))
-    private void updateState(BellBlockEntity bell, BellBlockEntityRenderState renderState, float f, Vec3d vec3d, @Nullable ModelCommandRenderer.CrumblingOverlayCommand overlay, CallbackInfo ci)
-    {
+    private void updateState(BellBlockEntity bell, BellBlockEntityRenderState renderState, float f, Vec3d vec3d, @Nullable ModelCommandRenderer.CrumblingOverlayCommand overlay, CallbackInfo ci) {
         BlockState blockState = bell.getCachedState();
 
         ((BellRenderStateAccessor)renderState).setMountAttachment(blockState.get(BellBlock.ATTACHMENT));
@@ -45,8 +47,7 @@ public class BellBlockEntityRendererMixin
     }
 
     @Inject(method = "render", at = @At("TAIL"), cancellable = true)
-    private void renderInject(BellBlockEntityRenderState state, MatrixStack matrices, OrderedRenderCommandQueue queue, CameraRenderState camera, CallbackInfo ci)
-    {
+    private void renderInject(BellBlockEntityRenderState state, MatrixStack matrices, OrderedRenderCommandQueue queue, CameraRenderState camera, CallbackInfo ci) {
         BellRenderStateAccessor accessor = (BellRenderStateAccessor) (Object) state;
         Attachment attachment = accessor.getMountAttachment();
         Direction facing = accessor.getMountFacing();
