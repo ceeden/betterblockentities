@@ -21,8 +21,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class ShulkerBoxBlockMixin
 {
     @Inject(method = "getTicker", at = @At("HEAD"), cancellable = true)
-    private <T extends BlockEntity> void removeTicker(World world, BlockState state, BlockEntityType<T> type, CallbackInfoReturnable<BlockEntityTicker<T>> cir)
-    {
+    private <T extends BlockEntity> void removeTicker(World world, BlockState state, BlockEntityType<T> type, CallbackInfoReturnable<BlockEntityTicker<T>> cir) {
         if (!ConfigManager.CONFIG.use_animations)
             cir.setReturnValue(null);
     }

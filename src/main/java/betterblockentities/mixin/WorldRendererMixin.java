@@ -10,7 +10,6 @@ import net.caffeinemc.mods.sodium.client.render.SodiumWorldRenderer;
 import net.caffeinemc.mods.sodium.client.render.chunk.ChunkUpdateTypes;
 import net.caffeinemc.mods.sodium.client.render.chunk.RenderSection;
 import net.caffeinemc.mods.sodium.client.render.chunk.RenderSectionManager;
-import net.caffeinemc.mods.sodium.client.render.chunk.compile.tasks.ChunkBuilderMeshingTask;
 import net.caffeinemc.mods.sodium.client.render.chunk.lists.ChunkRenderList;
 import net.caffeinemc.mods.sodium.client.render.chunk.lists.SortedRenderLists;
 import net.caffeinemc.mods.sodium.client.render.chunk.region.RenderRegion;
@@ -19,8 +18,6 @@ import net.caffeinemc.mods.sodium.client.util.iterator.ByteIterator;
 /* minecraft */
 import net.minecraft.block.entity.*;
 import net.minecraft.client.render.*;
-import net.minecraft.client.render.block.entity.BellBlockEntityRenderer;
-import net.minecraft.client.render.block.entity.ChestBlockEntityRenderer;
 import net.minecraft.client.render.state.WorldRenderState;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.BlockBreakingInfo;
@@ -35,7 +32,6 @@ import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import java.util.Iterator;
 import java.util.SortedSet;
 
-
 @Mixin(SodiumWorldRenderer.class)
 public abstract class WorldRendererMixin
 {
@@ -48,16 +44,16 @@ public abstract class WorldRendererMixin
     }
 
     /**
-     @author ceeden
-     @reason
+        @author ceeden
+        @reason
 
-     this adds upon the original sodium code and adds
-     our own animation/chunk rebuild/update logic.
+        this adds upon the original sodium code and adds
+        our own animation/chunk rebuild/update logic.
 
-     we could definitely improve this code lol
-     performance wise its alright might want to
-     clean it up and put parts in separate
-     helper classes
+        we could definitely improve this code lol
+        performance wise its alright might want to
+        clean it up and put parts in separate
+        helper classes
      */
     @Overwrite
     public void extractBlockEntities(Camera camera, float tickDelta, Long2ObjectMap<SortedSet<BlockBreakingInfo>> progression, WorldRenderState levelRenderState)
@@ -94,9 +90,7 @@ public abstract class WorldRendererMixin
                         }
                     }
                 }
-
-                if (!BlockEntityTracker.sectionsToUpdate.isEmpty())
-                {
+                if (!BlockEntityTracker.sectionsToUpdate.isEmpty()) {
                     for (RenderSection section : BlockEntityTracker.sectionsToUpdate) {
                         section.setPendingUpdate(ChunkUpdateTypes.REBUILD, 0);
                     }

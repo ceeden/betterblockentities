@@ -23,7 +23,7 @@ public class BlockRendererMixin
     @Inject(method = "renderModel", at = @At("HEAD"), cancellable = true)
     private void IgnoreAnimatingBlockEntity(BlockStateModel model, BlockState state, BlockPos pos, BlockPos origin, CallbackInfo ci)
     {
-        if (BlockEntityManager.blockSanityCheck(state.getBlock())) {
+        if (BlockEntityManager.isSupportedBlock(state.getBlock())) {
             boolean anim = BlockEntityTracker.animMap.contains(pos);
             if (anim) ci.cancel();
         }

@@ -1,6 +1,7 @@
 package betterblockentities.mixin;
 
 /* minecraft */
+import betterblockentities.helpers.BlockEntityManager;
 import net.minecraft.block.*;
 
 /* mixin */
@@ -13,11 +14,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class AbstractBlockMixin
 {
     @Inject(method = "getRenderType", at = @At("HEAD"), cancellable = true)
-    private void ForceToMesh(BlockState state, CallbackInfoReturnable<BlockRenderType> cir)
-    {
-        Block block = state.getBlock();
-        if (block instanceof ChestBlock || block instanceof EnderChestBlock || block instanceof ShulkerBoxBlock || block instanceof TrappedChestBlock
-        || block instanceof BellBlock || block instanceof DecoratedPotBlock)
+    private void ForceToMesh(BlockState state, CallbackInfoReturnable<BlockRenderType> cir) {
+        if (BlockEntityManager.isSupportedBlock(state.getBlock()))
             cir.setReturnValue(BlockRenderType.MODEL);
     }
 }

@@ -26,8 +26,7 @@ public class ModelLoader implements ModelLoadingPlugin
     public static final ExtraModelKey<BlockStateModel> BELL_BETWEEN_WALLS_KEY = ExtraModelKey.create(() -> "BellBetweenWallsModel");
 
     @Override
-    public void initialize(Context pluginContext)
-    {
+    public void initialize(Context pluginContext) {
         var BELL_WALL_ID = Identifier.of("betterblockentities","block/bell_wall");
         var BELL_FLOOR_ID = Identifier.of("betterblockentities","block/bell_floor");
         var BELL_CEILING_ID = Identifier.of("betterblockentities","block/bell_ceiling");
@@ -40,8 +39,7 @@ public class ModelLoader implements ModelLoadingPlugin
         pluginContext.addModel(BELL_BETWEEN_WALLS_KEY, SimpleUnbakedExtraModel.blockStateModel(BELL_BETWEEN_WALLS_ID));
     }
 
-    public static void loadModels()
-    {
+    public static void loadModels() {
         if (modelsLoaded)
             return;
 
