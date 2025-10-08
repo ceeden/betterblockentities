@@ -12,7 +12,7 @@ import java.util.*;
 
 public class ModelGenerator
 {
-    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
+    private static final Gson GSON = new GsonBuilder().disableHtmlEscaping().create();
     private static final String NAMESPACE = "minecraft";
 
     private final TemplateLoader loader = new TemplateLoader();

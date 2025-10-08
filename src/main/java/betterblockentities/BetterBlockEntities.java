@@ -4,6 +4,7 @@ package betterblockentities;
 import betterblockentities.gui.ConfigManager;
 
 /* fabric */
+import betterblockentities.resource.ResourceBuilder;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
 import net.fabricmc.api.ClientModInitializer;
 
@@ -21,12 +22,12 @@ import net.fabricmc.api.ClientModInitializer;
 public class BetterBlockEntities implements ClientModInitializer
 {
     @Override
-    public void onInitializeClient()
-    {
+    public void onInitializeClient() {
+        ResourceBuilder.buildPack();
+
         ModelLoadingPlugin.register(pluginContext -> {
             new ModelLoader().initialize(pluginContext);
         });
-
         ConfigManager.load();
     }
- }
+}

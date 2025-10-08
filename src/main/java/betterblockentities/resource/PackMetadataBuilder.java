@@ -16,7 +16,7 @@ import java.util.HashMap;
 
 public class PackMetadataBuilder
 {
-    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
+    private static final Gson GSON = new GsonBuilder().disableHtmlEscaping().create();
 
     public Map<String, byte[]> createMetadataAndIcon() {
         Map<String, byte[]> entries = new HashMap<>();

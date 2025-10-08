@@ -10,7 +10,7 @@ import java.util.*;
 
 public class TemplateLoader
 {
-    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
+    private static final Gson GSON = new GsonBuilder().disableHtmlEscaping().create();
 
     public JsonObject loadTemplate(String template) {
         try (InputStream input = TemplateLoader.class.getResourceAsStream(
