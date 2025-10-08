@@ -14,7 +14,7 @@ public class TemplateLoader
 
     public JsonObject loadTemplate(String template) {
         try (InputStream input = TemplateLoader.class.getResourceAsStream(
-                "/assets/betterblockentities/models/block/" + template)) {
+                "/assets/betterblockentities/models/block/templates/" + template)) {
             if (input == null) return null;
             return JsonParser.parseReader(new InputStreamReader(input, StandardCharsets.UTF_8)).getAsJsonObject();
         } catch (IOException e) {
