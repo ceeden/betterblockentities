@@ -27,7 +27,8 @@ public class BlockEntityManager
                 || block instanceof EnderChestBlock
                 || block instanceof ShulkerBoxBlock
                 || block instanceof BellBlock
-                || block instanceof DecoratedPotBlock;
+                || block instanceof DecoratedPotBlock
+                || block instanceof BedBlock;
     }
 
     private boolean isSupportedEntity() {
@@ -35,7 +36,8 @@ public class BlockEntityManager
                 || blockEntity instanceof EnderChestBlockEntity
                 || blockEntity instanceof ShulkerBoxBlockEntity
                 || blockEntity instanceof BellBlockEntity
-                || blockEntity instanceof DecoratedPotBlockEntity;
+                || blockEntity instanceof DecoratedPotBlockEntity
+                || blockEntity instanceof BedBlockEntity;
     }
 
     private boolean isAnimating() {

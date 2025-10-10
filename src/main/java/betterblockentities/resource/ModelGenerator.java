@@ -23,8 +23,12 @@ public class ModelGenerator
         generateLeftChests(entries);
         generateRightChests(entries);
         generateSingleChests(entries);
+        generateBedsHead(entries);
+        generateBedsFoot(entries);
+
         generateShulkerBlockstates(entries);
         generateChestBlockstates(entries);
+        generateBedBlockstates(entries);
         return entries;
     }
 
@@ -96,6 +100,32 @@ public class ModelGenerator
         }
     }
 
+    private void generateBedsHead(Map<String, byte[]> map) {
+        JsonObject template = loader.loadTemplate("bed_head_template.json");
+        if (template == null) return;
+        var elements = loader.readTemplateElements(template);
+
+        for (DyeColor color : DyeColor.values()) {
+            String name = color.getId() + "_bed_head";
+            String texture = "minecraft:entity/bed/" + color.getId();
+            map.put("assets/minecraft/models/block/" + name + ".json",
+                    GSON.toJson(makeModel("bed", texture, elements)).getBytes(StandardCharsets.UTF_8));
+        }
+    }
+
+    private void generateBedsFoot(Map<String, byte[]> map) {
+        JsonObject template = loader.loadTemplate("bed_foot_template.json");
+        if (template == null) return;
+        var elements = loader.readTemplateElements(template);
+
+        for (DyeColor color : DyeColor.values()) {
+            String name = color.getId() + "_bed_foot";
+            String texture = "minecraft:entity/bed/" + color.getId();
+            map.put("assets/minecraft/models/block/" + name + ".json",
+                    GSON.toJson(makeModel("bed", texture, elements)).getBytes(StandardCharsets.UTF_8));
+        }
+    }
+
     private void generateShulkerBlockstates(Map<String, byte[]> map) {
         for (DyeColor color : DyeColor.values()) {
             String name = color.getId() + "_shulker_box";
@@ -126,6 +156,47 @@ public class ModelGenerator
         baseRoot.add("variants", baseVariants);
         map.put("assets/minecraft/blockstates/" + baseName + ".json",
                 GSON.toJson(baseRoot).getBytes(StandardCharsets.UTF_8));
+    }
+
+
+    private void generateBedBlockstates(Map<String, byte[]> map) {
+        for (DyeColor color : DyeColor.values()) {
+            String name = color.getId() + "_bed";
+            JsonObject variants = new JsonObject();
+
+            String[] facings = {"north", "south", "west", "east"};
+            String[] parts = {"head", "foot"};
+            boolean[] occupiedValues = {false, true};
+
+            for (String facing : facings) {
+                for (String part : parts) {
+                    for (boolean occupied : occupiedValues) {
+                        String key = String.format("facing=%s,part=%s,occupied=%s", facing, part, occupied);
+                        int yRot = switch (facing) {
+                            case "south" -> 180;
+                            case "west" -> 270;
+                            case "east" -> 90;
+                            default -> 0;
+                        };
+
+                        String model = "minecraft:block/" + name + "_" + part;
+
+                        JsonObject variant = new JsonObject();
+                        variant.addProperty("model", model);
+                        variant.addProperty("y", yRot);
+
+                        variants.add(key, variant);
+                    }
+                }
+            }
+
+            JsonObject root = new JsonObject();
+            root.add("variants", variants);
+
+            // Save as usual
+            map.put("assets/minecraft/blockstates/" + name + ".json",
+                    GSON.toJson(root).getBytes(StandardCharsets.UTF_8));
+        }
     }
 
     private void generateChestBlockstates(Map<String, byte[]> map) {

@@ -19,6 +19,11 @@
       "type": "directory",
       "source": "entity/decorated_pot",
       "prefix": "entity/decorated_pot/"
+    },
+    {
+      "type": "directory",
+      "source": "entity/bed",
+      "prefix": "entity/bed/"
     }
   ]
 }
