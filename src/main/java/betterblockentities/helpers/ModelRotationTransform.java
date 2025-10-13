@@ -1,5 +1,6 @@
 package betterblockentities.helpers;
 
+/* fabric */
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadTransform;
 
 public class ModelRotationTransform

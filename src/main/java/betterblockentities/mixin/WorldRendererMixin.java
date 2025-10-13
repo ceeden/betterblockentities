@@ -83,6 +83,7 @@ public abstract class WorldRendererMixin
                     {
                         for (BlockEntity blockEntity : blockEntities)
                         {
+                            /* run our own animation logic (whether to render this block entity or not with its BER) */
                             BlockEntityManager manager = new BlockEntityManager(blockEntity, renderSection, tickDelta);
                             if (manager.shouldRender())
                                 this.extractBlockEntity(blockEntity, stack, camera, tickDelta, progression, levelRenderState);
@@ -90,6 +91,8 @@ public abstract class WorldRendererMixin
                         }
                     }
                 }
+
+                /* check if we have sections to update */
                 if (!BlockEntityTracker.sectionsToUpdate.isEmpty()) {
                     for (RenderSection section : BlockEntityTracker.sectionsToUpdate) {
                         section.setPendingUpdate(ChunkUpdateTypes.REBUILD, 0);

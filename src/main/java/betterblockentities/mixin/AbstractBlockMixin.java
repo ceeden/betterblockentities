@@ -13,6 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(AbstractBlock.class)
 public abstract class AbstractBlockMixin
 {
+    /* force all supported blocks to handled by the ChunkMesher */
     @Inject(method = "getRenderType", at = @At("HEAD"), cancellable = true)
     private void ForceToMesh(BlockState state, CallbackInfoReturnable<BlockRenderType> cir) {
         if (BlockEntityManager.isSupportedBlock(state.getBlock()))

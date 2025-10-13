@@ -13,6 +13,7 @@ public class ResourceBuilder
     private static ResourcePack pack;
     private static ResourcePackProfile packProfile;
 
+    /* generate the "in memory" resource pack to later be passed to our pack profile */
     public static byte[] buildZip() {
         PackMetadataBuilder meta = new PackMetadataBuilder();
         ModelGenerator models = new ModelGenerator();
@@ -25,6 +26,7 @@ public class ResourceBuilder
         return assembler.assemble(entries);
     }
 
+    /* builds the resource pack and its profile, should be called once on mod initialization */
     public static void buildPack() {
         byte[] packData = buildZip();
         pack = new Pack("betterblockentities-generated", packData);
@@ -48,7 +50,6 @@ public class ResourceBuilder
     private static ResourcePack getPack() {
         return pack;
     }
-
     public static ResourcePackProfile getPackProfile() {
         return packProfile;
     }

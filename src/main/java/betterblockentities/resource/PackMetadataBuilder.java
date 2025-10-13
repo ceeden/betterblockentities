@@ -19,6 +19,7 @@ public class PackMetadataBuilder
 {
     private static final Gson GSON = new GsonBuilder().disableHtmlEscaping().create();
 
+    /* creates the metadata and icon for our builtin resource pack */
     public Map<String, byte[]> createMetadataAndIcon() {
         Map<String, byte[]> entries = new HashMap<>();
 
@@ -28,6 +29,7 @@ public class PackMetadataBuilder
         return entries;
     }
 
+    /* generates "pack.mcmeta" file, the format of this file might change between minecraft versions */
     private byte[] createPackMcmeta() {
         PackVersion version = SharedConstants.getGameVersion().packVersion(ResourceType.CLIENT_RESOURCES);
         int versionNmr = version.major();
@@ -42,6 +44,7 @@ public class PackMetadataBuilder
         return GSON.toJson(packJson).getBytes(StandardCharsets.UTF_8);
     }
 
+    /* loads the icon for our builtin resource pack from the mod resources */
     private void loadIcon(Map<String, byte[]> entries) {
         try (InputStream input = PackMetadataBuilder.class.getResourceAsStream(
                 "/assets/betterblockentities/icon.png")) {

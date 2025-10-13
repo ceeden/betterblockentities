@@ -4,6 +4,7 @@
   "compatibilityLevel": "JAVA_21",
   "mixins": [
     "AbstractBlockMixin",
+    "AbstractBlockRenderContextAccessor",
     "BellBlockEntityRendererMixin",
     "BellBlockEntityRenderStateMixin",
     "BlockRendererMixin",
@@ -12,6 +13,7 @@
     "RenderLayersMixin",
     "ResourcePackManagerMixin",
     "ShulkerBoxBlockMixin",
+    "AbstractSignBlockEntityRendererMixin",
     "WorldRendererMixin"
   ],
   "server": [],

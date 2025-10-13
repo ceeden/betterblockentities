@@ -14,6 +14,7 @@ import net.minecraft.util.Identifier;
 @Environment(EnvType.CLIENT)
 public class ModelLoader implements ModelLoadingPlugin
 {
+    public static Context Context;
     public static BlockStateModel bell_wall;
     public static BlockStateModel bell_floor;
     public static BlockStateModel bell_ceiling;
@@ -27,6 +28,7 @@ public class ModelLoader implements ModelLoadingPlugin
 
     @Override
     public void initialize(Context pluginContext) {
+        Context = pluginContext;
         var BELL_WALL_ID = Identifier.of("betterblockentities","block/bell_wall");
         var BELL_FLOOR_ID = Identifier.of("betterblockentities","block/bell_floor");
         var BELL_CEILING_ID = Identifier.of("betterblockentities","block/bell_ceiling");

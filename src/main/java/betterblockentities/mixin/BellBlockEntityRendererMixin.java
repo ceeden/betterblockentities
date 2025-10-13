@@ -38,24 +38,28 @@ public class BellBlockEntityRendererMixin
 {
     @Shadow @Final public static SpriteIdentifier BELL_BODY_TEXTURE;
 
+    /* access our BellRenderStateAccessor to set attachment and facing */
     @Inject(method = "updateRenderState", at = @At("TAIL"))
     private void updateState(BellBlockEntity bell, BellBlockEntityRenderState renderState, float f, Vec3d vec3d, @Nullable ModelCommandRenderer.CrumblingOverlayCommand overlay, CallbackInfo ci) {
         BlockState blockState = bell.getCachedState();
-
-        ((BellRenderStateAccessor)renderState).setMountAttachment(blockState.get(BellBlock.ATTACHMENT));
-        ((BellRenderStateAccessor)renderState).setMountFacing(blockState.get(BellBlock.FACING));
+        BellRenderStateAccessor accessor = (BellRenderStateAccessor)(Object)renderState;
+        accessor.setMountAttachment(blockState.get(BellBlock.ATTACHMENT));
+        accessor.setMountFacing(blockState.get(BellBlock.FACING));
     }
 
+    /* manually adds the posts, bars, etc... to be rendered when we are animating */
     @Inject(method = "render", at = @At("TAIL"), cancellable = true)
     private void renderInject(BellBlockEntityRenderState state, MatrixStack matrices, OrderedRenderCommandQueue queue, CameraRenderState camera, CallbackInfo ci) {
+        /* access our BellRenderStateAccessor to get ATTACHMENT and facing */
         BellRenderStateAccessor accessor = (BellRenderStateAccessor) (Object) state;
         Attachment attachment = accessor.getMountAttachment();
         Direction facing = accessor.getMountFacing();
 
+        /* lazy init our accessory models (posts, bar, etc...) might want to this elsewhere */
         ModelLoader.loadModels();
 
+        /* transform logic */
         matrices.push();
-
         matrices.translate(0.5, 0.0, 0.5);
         if (attachment != Attachment.FLOOR) {
             switch (facing) {
@@ -75,6 +79,7 @@ public class BellBlockEntityRendererMixin
         }
         matrices.translate(-0.5, 0.0, -0.5);
 
+        /* select the appropriate model depending on attachment */
         BlockStateModel model = null;
         switch (attachment) {
             case FLOOR -> model = ModelLoader.bell_floor;
@@ -83,6 +88,7 @@ public class BellBlockEntityRendererMixin
             case DOUBLE_WALL -> model = ModelLoader.bell_between_walls;
         }
 
+        /* select correct renderlayer and submit the model to the queue to be rendered later */
         RenderLayer layer = BELL_BODY_TEXTURE.getRenderLayer(RenderLayer::getEntitySolid);
         queue.submitBlockStateModel(matrices, layer, model, 1.0f, 1.0f, 1.0f, state.lightmapCoordinates, OverlayTexture.DEFAULT_UV, 0);
         matrices.pop();

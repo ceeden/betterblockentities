@@ -17,19 +17,15 @@ public class BellBlockEntityRenderStateMixin implements BellRenderStateAccessor
 {
     @Unique private Attachment mountAttachment;
     @Unique private Direction mountFacing;
-
     @Override public void setMountAttachment(Attachment attachment) {
         this.mountAttachment = attachment;
     }
-
     @Override public Attachment getMountAttachment() {
         return mountAttachment;
     }
-
     @Override public void setMountFacing(Direction direction) {
         this.mountFacing = direction;
     }
-
     @Override public Direction getMountFacing() {
         return mountFacing;
     }

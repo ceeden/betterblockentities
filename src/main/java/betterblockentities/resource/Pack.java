@@ -24,6 +24,7 @@ import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+/* this is our actual resource pack that holds the pack data generated */
 public class Pack implements ResourcePack
 {
     private final String name;

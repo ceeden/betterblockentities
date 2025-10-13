@@ -28,7 +28,11 @@ public class BlockEntityManager
                 || block instanceof ShulkerBoxBlock
                 || block instanceof BellBlock
                 || block instanceof DecoratedPotBlock
-                || block instanceof BedBlock;
+                || block instanceof BedBlock
+                || block instanceof SignBlock
+                || block instanceof HangingSignBlock
+                || block instanceof WallSignBlock
+                || block instanceof WallHangingSignBlock;
     }
 
     private boolean isSupportedEntity() {
@@ -38,6 +42,7 @@ public class BlockEntityManager
                 || blockEntity instanceof BellBlockEntity
                 || blockEntity instanceof DecoratedPotBlockEntity
                 || blockEntity instanceof BedBlockEntity;
+                //|| blockEntity instanceof SignBlockEntity;
     }
 
     private boolean isAnimating() {

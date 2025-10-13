@@ -17,6 +17,7 @@ public class ModelGenerator
 
     private final TemplateLoader loader = new TemplateLoader();
 
+    /* generates all necessary block models and blockstate jsons for "chunk rendering" */
     public Map<String, byte[]> generateAllModels() {
         Map<String, byte[]> entries = new HashMap<>();
         generateShulkerBoxes(entries);
@@ -25,10 +26,12 @@ public class ModelGenerator
         generateSingleChests(entries);
         generateBedsHead(entries);
         generateBedsFoot(entries);
+        generateAllSignModels(entries);
 
         generateShulkerBlockstates(entries);
         generateChestBlockstates(entries);
         generateBedBlockstates(entries);
+        generateSignBlockstates(entries);
         return entries;
     }
 
@@ -126,6 +129,39 @@ public class ModelGenerator
         }
     }
 
+    private void generateAllSignModels(Map<String, byte[]> map) {
+        generateSigns(map, "sign_template.json", false, true);
+        generateSigns(map, "sign_wall_template.json", false, false);
+        generateSigns(map, "sign_hanging_template.json", true, false);
+        generateSigns(map, "sign_hanging_wall_template.json", true, false);
+    }
+
+    private static final List<String> WOOD_TYPES = List.of(
+            "oak", "spruce", "birch", "jungle", "acacia",
+            "dark_oak", "mangrove", "cherry", "bamboo",
+            "crimson", "warped", "pale_oak"
+    );
+
+    private void generateSigns(Map<String, byte[]> map, String templateName, boolean hanging, boolean standing)
+    {
+        JsonObject template = loader.loadTemplate(templateName);
+        if (template == null) return;
+
+        var elements = loader.readTemplateElements(template);
+
+        for (String wood : WOOD_TYPES) {
+            String texture = "minecraft:entity/signs/" + (hanging ? "hanging/" : "") + wood;
+
+            String baseName = wood + (hanging ? "_hanging_sign" : standing ? "_sign" : "_wall_sign");
+
+            map.put("assets/minecraft/models/block/" + baseName + ".json",
+                    GSON.toJson(makeModel("sign", texture, elements)).getBytes(StandardCharsets.UTF_8));
+
+            map.put("assets/minecraft/models/block/" + wood + (hanging ? "_wall_hanging_sign" : "_wall_sign") + ".json",
+                    GSON.toJson(makeModel("sign", texture, elements)).getBytes(StandardCharsets.UTF_8));
+        }
+    }
+
     private void generateShulkerBlockstates(Map<String, byte[]> map) {
         for (DyeColor color : DyeColor.values()) {
             String name = color.getId() + "_shulker_box";
@@ -157,7 +193,6 @@ public class ModelGenerator
         map.put("assets/minecraft/blockstates/" + baseName + ".json",
                 GSON.toJson(baseRoot).getBytes(StandardCharsets.UTF_8));
     }
-
 
     private void generateBedBlockstates(Map<String, byte[]> map) {
         for (DyeColor color : DyeColor.values()) {
@@ -197,6 +232,60 @@ public class ModelGenerator
             map.put("assets/minecraft/blockstates/" + name + ".json",
                     GSON.toJson(root).getBytes(StandardCharsets.UTF_8));
         }
+    }
+
+    private void generateSignBlockstates(Map<String, byte[]> map) {
+        for (String wood : WOOD_TYPES) {
+            // 1. Standing sign
+            generateStandingSignBlockstate(map, wood, false);
+
+            // 2. Wall sign
+            generateWallSignBlockstate(map, wood, false);
+
+            // 3. Hanging (ceiling) sign
+            generateStandingSignBlockstate(map, wood, true);
+
+            // 4. Wall hanging sign
+            generateWallSignBlockstate(map, wood, true);
+        }
+    }
+
+    private void generateStandingSignBlockstate(Map<String, byte[]> map, String wood, boolean hanging) {
+        String baseName = wood + (hanging ? "_hanging_sign" : "_sign");
+        JsonObject variants = new JsonObject();
+
+        // rotation property ranges from 0–15
+        for (int rot = 0; rot < 16; rot++) {
+            float yRot = (rot * 22.5f) % 360f; // rotation in degrees
+
+            JsonObject variant = new JsonObject();
+            variant.addProperty("model", "minecraft:block/" + baseName);
+            variant.addProperty("y", yRot); // apply Y rotation directly
+            variants.add("rotation=" + rot, variant);
+        }
+
+        JsonObject root = new JsonObject();
+        root.add("variants", variants);
+        map.put("assets/minecraft/blockstates/" + baseName + ".json",
+                GSON.toJson(root).getBytes(StandardCharsets.UTF_8));
+    }
+
+    private void generateWallSignBlockstate(Map<String, byte[]> map, String wood, boolean hanging) {
+        String baseName = wood + (hanging ? "_wall_hanging_sign" : "_wall_sign");
+        JsonObject variants = new JsonObject();
+
+        String[] facings = {"north", "east", "south", "west"};
+        int[] rotations = {0, 90, 180, 270};
+
+        for (int i = 0; i < facings.length; i++) {
+            String facing = facings[i];
+            variants.add("facing=" + facing, createVariantFloat(baseName, 0, rotations[i]));
+        }
+
+        JsonObject root = new JsonObject();
+        root.add("variants", variants);
+        map.put("assets/minecraft/blockstates/" + baseName + ".json",
+                GSON.toJson(root).getBytes(StandardCharsets.UTF_8));
     }
 
     private void generateChestBlockstates(Map<String, byte[]> map) {
@@ -248,6 +337,14 @@ public class ModelGenerator
     }
 
     private JsonObject createVariant(String name, int x, int y) {
+        JsonObject v = new JsonObject();
+        v.addProperty("model", NAMESPACE + ":block/" + name);
+        if (x != 0) v.addProperty("x", x);
+        if (y != 0) v.addProperty("y", y);
+        return v;
+    }
+
+    private JsonObject createVariantFloat(String name, float x, float y) {
         JsonObject v = new JsonObject();
         v.addProperty("model", NAMESPACE + ":block/" + name);
         if (x != 0) v.addProperty("x", x);
