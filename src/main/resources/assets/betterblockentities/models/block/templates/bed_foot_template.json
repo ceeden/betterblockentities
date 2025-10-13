@@ -1,10 +1,10 @@
-{
-	"parent": "bed_foot",
-	"ambientocclusion": false,
-	"textures": {
-		"0": "black",
-		"particle": "black"
-	},
+  {
+  "parent": "block/block",
+  "texture_size": [64, 64],
+  "textures": {
+    "bed": "minecraft:entity/bed/white",
+    "particle": "minecraft:entity/bed/white"
+  },
 	"elements": [
 		{
 			"from": [0, 3, 0],
