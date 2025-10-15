@@ -10,8 +10,10 @@ import net.minecraft.client.render.state.CameraRenderState;
 import net.minecraft.client.util.math.MatrixStack;
 
 /* mixin */
+import net.minecraft.text.Text;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -30,16 +32,36 @@ public abstract class AbstractSignBlockEntityRendererMixin {
 
     /* to update just goto the AbstractSignBlockEntityRenderer class and IDEA -> View -> Show Bytecode */
     @Inject(method = "render(Lnet/minecraft/client/render/block/entity/state/SignBlockEntityRenderState;Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/command/OrderedRenderCommandQueue;Lnet/minecraft/client/render/state/CameraRenderState;)V", at = @At("HEAD"), cancellable = true)
-    public void render(SignBlockEntityRenderState signBlockEntityRenderState, MatrixStack matrixStack, OrderedRenderCommandQueue orderedRenderCommandQueue, CameraRenderState cameraRenderState, CallbackInfo ci) {
+    public void render(SignBlockEntityRenderState state, MatrixStack matrixStack, OrderedRenderCommandQueue orderedRenderCommandQueue, CameraRenderState cameraRenderState, CallbackInfo ci) {
         ci.cancel();
 
-        BlockState blockState = signBlockEntityRenderState.blockState;
-        AbstractSignBlock block = (AbstractSignBlock)blockState.getBlock();
+        /* sanity check */
+        if (state.frontText == null || state.backText == null) return;
+
+        /* check if we have text */
+        boolean hasTextFront = hasText(state.frontText.getMessages(false));
+        boolean hasTextBack = hasText(state.backText.getMessages(false));
+
+        /* if no text then don't render */
+        if (!hasTextFront && !hasTextBack) return;
+
+        BlockState blockState = state.blockState;
+        AbstractSignBlock block = (AbstractSignBlock) blockState.getBlock();
 
         matrixStack.push();
         this.applyTransforms(matrixStack, -block.getRotationDegrees(blockState), blockState);
-        this.renderText(signBlockEntityRenderState, matrixStack, orderedRenderCommandQueue, true);
-        this.renderText(signBlockEntityRenderState, matrixStack, orderedRenderCommandQueue, false);
+
+        if (hasTextFront) this.renderText(state, matrixStack, orderedRenderCommandQueue, true);
+        if (hasTextBack)  this.renderText(state, matrixStack, orderedRenderCommandQueue, false);
+
         matrixStack.pop();
+    }
+
+    @Unique
+    private boolean hasText(Text[] lines) {
+        for (Text line : lines) {
+            if (line != null && !line.getString().isEmpty()) return true;
+        }
+        return false;
     }
 }
