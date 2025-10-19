@@ -4,7 +4,7 @@ package betterblockentities;
 import betterblockentities.gui.ConfigManager;
 
 /* fabric */
-import betterblockentities.resource.ResourceBuilder;
+import betterblockentities.resource.pack.ResourceBuilder;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
 import net.fabricmc.api.ClientModInitializer;
 

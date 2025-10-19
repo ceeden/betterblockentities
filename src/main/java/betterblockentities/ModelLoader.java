@@ -11,34 +11,23 @@ import net.minecraft.client.render.model.BakedModelManager;
 import net.minecraft.client.render.model.BlockStateModel;
 import net.minecraft.util.Identifier;
 
+import java.util.HashSet;
+
 @Environment(EnvType.CLIENT)
 public class ModelLoader implements ModelLoadingPlugin
 {
-    public static Context Context;
-    public static BlockStateModel bell_wall;
-    public static BlockStateModel bell_floor;
-    public static BlockStateModel bell_ceiling;
-    public static BlockStateModel bell_between_walls;
+    public static BlockStateModel bell_body;
     private static boolean modelsLoaded = false;
 
-    public static final ExtraModelKey<BlockStateModel> BELL_WALL_KEY = ExtraModelKey.create(() -> "BellWallModel");
-    public static final ExtraModelKey<BlockStateModel> BELL_FLOOR_KEY = ExtraModelKey.create(() -> "BellFloorModel");
-    public static final ExtraModelKey<BlockStateModel> BELL_CEILING_KEY = ExtraModelKey.create(() -> "BellCeilingModel");
-    public static final ExtraModelKey<BlockStateModel> BELL_BETWEEN_WALLS_KEY = ExtraModelKey.create(() -> "BellBetweenWallsModel");
+    public static final ExtraModelKey<BlockStateModel> BELL_BODY_KEY = ExtraModelKey.create(() -> "BellBody");
 
     @Override
-    public void initialize(Context pluginContext) {
-        Context = pluginContext;
-        var BELL_WALL_ID = Identifier.of("betterblockentities","block/bell_wall");
-        var BELL_FLOOR_ID = Identifier.of("betterblockentities","block/bell_floor");
-        var BELL_CEILING_ID = Identifier.of("betterblockentities","block/bell_ceiling");
-        var BELL_BETWEEN_WALLS_ID = Identifier.of("betterblockentities","block/bell_between_walls");
+    public void initialize(Context pluginContext)
+    {
+        var BELL_BODY_ID = Identifier.of("betterblockentities","block/bell_body");
 
         /* adds model which we can retrieve with bakedModelManager.getModel(key) */
-        pluginContext.addModel(BELL_WALL_KEY, SimpleUnbakedExtraModel.blockStateModel(BELL_WALL_ID));
-        pluginContext.addModel(BELL_FLOOR_KEY, SimpleUnbakedExtraModel.blockStateModel(BELL_FLOOR_ID));
-        pluginContext.addModel(BELL_CEILING_KEY, SimpleUnbakedExtraModel.blockStateModel(BELL_CEILING_ID));
-        pluginContext.addModel(BELL_BETWEEN_WALLS_KEY, SimpleUnbakedExtraModel.blockStateModel(BELL_BETWEEN_WALLS_ID));
+        pluginContext.addModel(BELL_BODY_KEY, SimpleUnbakedExtraModel.blockStateModel(BELL_BODY_ID));
     }
 
     public static void loadModels() {
@@ -49,10 +38,7 @@ public class ModelLoader implements ModelLoadingPlugin
         if (manager == null)
             return;
 
-        bell_wall = manager.getModel(BELL_WALL_KEY);
-        bell_floor = manager.getModel(BELL_FLOOR_KEY);
-        bell_ceiling = manager.getModel(BELL_CEILING_KEY);
-        bell_between_walls = manager.getModel(BELL_BETWEEN_WALLS_KEY);
+        bell_body = manager.getModel(BELL_BODY_KEY);
 
         modelsLoaded = true;
     }

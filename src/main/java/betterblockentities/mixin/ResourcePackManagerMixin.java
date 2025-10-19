@@ -1,7 +1,7 @@
 package betterblockentities.mixin;
 
 /* local */
-import betterblockentities.resource.ResourceBuilder;
+import betterblockentities.resource.pack.ResourceBuilder;
 
 /* minecraft */
 import net.minecraft.resource.*;
