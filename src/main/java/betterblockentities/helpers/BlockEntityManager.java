@@ -1,121 +1,104 @@
 package betterblockentities.helpers;
 
+/* local */
 import betterblockentities.gui.ConfigManager;
+
+/* sodium */
 import net.caffeinemc.mods.sodium.client.render.chunk.RenderSection;
+
+/* minecraft */
 import net.minecraft.block.*;
 import net.minecraft.block.entity.*;
-import java.util.Random;
 
 public class BlockEntityManager
 {
-    private static BlockEntity blockEntity;
-    private static RenderSection renderSection;
-    private static float tickDelta;
+    private final BlockEntity blockEntity;
+    private final RenderSection renderSection;
+    private final float tickDelta;
 
-    private static Random random = new Random();
-
-    public BlockEntityManager(BlockEntity blockEntity, RenderSection renderSection, float tickDelta)
-    {
+    public BlockEntityManager(BlockEntity blockEntity, RenderSection renderSection, float tickDelta) {
         this.blockEntity = blockEntity;
         this.renderSection = renderSection;
         this.tickDelta = tickDelta;
     }
 
-    public static boolean blockSanityCheck(Block block)
-    {
-        if (block instanceof ChestBlock || block instanceof EnderChestBlock)
-            return true;
-        else if (block instanceof ShulkerBoxBlock)
-            return true;
-        else if (block instanceof BellBlock)
-            return true;
-        else if (block instanceof DecoratedPotBlock)
-            return true;
-        return false;
+    public static boolean isSupportedBlock(Block block) {
+        return block instanceof ChestBlock
+                || block instanceof EnderChestBlock
+                || block instanceof ShulkerBoxBlock
+                || block instanceof BellBlock
+                || block instanceof DecoratedPotBlock
+                || block instanceof BedBlock
+                || block instanceof SignBlock
+                || block instanceof HangingSignBlock
+                || block instanceof WallSignBlock
+                || block instanceof WallHangingSignBlock;
     }
 
-    private boolean entitySanityCheck()
-    {
-        if (blockEntity instanceof ChestBlockEntity || blockEntity instanceof EnderChestBlockEntity)
-            return true;
-        else if (blockEntity instanceof ShulkerBoxBlockEntity)
-            return true;
-        else if (blockEntity instanceof BellBlockEntity)
-            return true;
-        else if (blockEntity instanceof DecoratedPotBlockEntity)
-            return true;
-        return false;
+    private boolean isSupportedEntity() {
+        return blockEntity instanceof ChestBlockEntity
+                || blockEntity instanceof EnderChestBlockEntity
+                || blockEntity instanceof ShulkerBoxBlockEntity
+                || blockEntity instanceof BellBlockEntity
+                || blockEntity instanceof DecoratedPotBlockEntity
+                || blockEntity instanceof BedBlockEntity;
+                //|| blockEntity instanceof SignBlockEntity;
     }
 
-    private boolean isAnimating()
-    {
-        float animationProgress = 0;
+    private boolean isAnimating() {
+        float animationProgress = 0f;
         boolean animating = false;
 
-        if (blockEntity instanceof ChestBlockEntity || blockEntity instanceof EnderChestBlockEntity)
-            animationProgress = ((LidOpenable)blockEntity).getAnimationProgress(tickDelta);
-        else if (blockEntity instanceof ShulkerBoxBlockEntity)
-            animationProgress = ((ShulkerBoxBlockEntity)blockEntity).getAnimationProgress(tickDelta);
-        else if (blockEntity instanceof BellBlockEntity)
-            animating = ((BellBlockEntity)blockEntity).ringing;
-        else if (blockEntity instanceof DecoratedPotBlockEntity)
-        {
-            if (((DecoratedPotBlockEntity)blockEntity).lastWobbleType != null)
-            {
-                long now = blockEntity.getWorld().getTime();
-                long wobble_time = ((DecoratedPotBlockEntity)blockEntity).lastWobbleTime;
-                int lengthInTicks = ((DecoratedPotBlockEntity)blockEntity).lastWobbleType.lengthInTicks;
-                animating = now - wobble_time < lengthInTicks;
-            }
+        if (blockEntity instanceof LidOpenable lid)
+            animationProgress = lid.getAnimationProgress(tickDelta);
+
+        else if (blockEntity instanceof ShulkerBoxBlockEntity shulker)
+            animationProgress = shulker.getAnimationProgress(tickDelta);
+
+        else if (blockEntity instanceof BellBlockEntity bell)
+            animating = bell.ringing;
+
+        else if (blockEntity instanceof DecoratedPotBlockEntity pot && pot.lastWobbleType != null) {
+            long now = blockEntity.getWorld().getTime();
+            long wobbleTime = pot.lastWobbleTime;
+            int lengthInTicks = pot.lastWobbleType.lengthInTicks;
+            animating = now - wobbleTime < lengthInTicks;
         }
 
-        if (animationProgress > 0.00 || animating)
-            return true;
-        return false;
+        return animationProgress > 0.0f || animating;
     }
 
-    public boolean shouldRender()
-    {
-        //render normal blocks regularly
-        if (!entitySanityCheck())
+    public boolean shouldRender() {
+        if (!isSupportedEntity())
             return true;
 
-        if (isAnimating()) {
-            return animatingLogic();
-        }
-        else {
-            return staticLogic();
-        }
+        return isAnimating() ? handleAnimating() : handleStatic();
     }
 
-    private boolean animatingLogic()
-    {
-        if (!(BlockEntityTracker.animMap.contains(blockEntity.getPos())))
-        {
-            BlockEntityTracker.animMap.add(blockEntity.getPos());
+    private boolean handleAnimating() {
+        var pos = blockEntity.getPos();
+        if (!BlockEntityTracker.animMap.contains(pos)) {
+            BlockEntityTracker.animMap.add(pos);
             BlockEntityTracker.sectionsToUpdate.add(renderSection);
         }
         return true;
     }
 
-    private boolean staticLogic()
-    {
-        if (BlockEntityTracker.animMap.contains(blockEntity.getPos()))
-        {
-            BlockEntityTracker.animMap.remove(blockEntity.getPos());
+    private boolean handleStatic() {
+        var pos = blockEntity.getPos();
+
+        if (BlockEntityTracker.animMap.remove(pos)) {
             BlockEntityTracker.sectionsToUpdate.add(renderSection);
-            BlockEntityTracker.extraRenderPasses.put(blockEntity.getPos(), ConfigManager.CONFIG.smoothness_slider);
+            BlockEntityTracker.extraRenderPasses.put(pos, ConfigManager.CONFIG.smoothness_slider);
         }
-        if (BlockEntityTracker.extraRenderPasses.containsKey(blockEntity.getPos()))
-        {
-            int renderPasses = BlockEntityTracker.extraRenderPasses.get(blockEntity.getPos());
-            if (renderPasses > 0)
-            {
-                BlockEntityTracker.extraRenderPasses.put(blockEntity.getPos(), renderPasses - 1);
+
+        Integer passes = BlockEntityTracker.extraRenderPasses.get(pos);
+        if (passes != null) {
+            if (passes > 0) {
+                BlockEntityTracker.extraRenderPasses.put(pos, passes - 1);
                 return true;
-            }
-            else {
-                BlockEntityTracker.extraRenderPasses.remove(blockEntity.getPos());
+            } else {
+                BlockEntityTracker.extraRenderPasses.remove(pos);
             }
         }
         return false;

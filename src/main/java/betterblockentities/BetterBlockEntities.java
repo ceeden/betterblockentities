@@ -4,19 +4,16 @@ package betterblockentities;
 import betterblockentities.gui.ConfigManager;
 
 /* fabric */
-import betterblockentities.resource.ResourceBuilder;
+import betterblockentities.resource.pack.ResourceBuilder;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
 import net.fabricmc.api.ClientModInitializer;
 
 /*
-    TODO: add support for vanilla fabric (so the mod can run without
+    TODO: Add support for vanilla fabric (so the mod can run without
      sodium too)
-    TODO: add support for nvidium https://github.com/MCRcortex/nvidium
-    TODO: fix double-chest UV mappings for left and right (make them look
-     nicer).
-    TODO:
-     fix bug where chests don't animate on some world-saves. weirdly enough
-     if you replace the chest it starts animating again
+    TODO: Improve signs, make them completely baked into meshes (sign text)
+    TODO: Add support for pottery patterns (decorated pots)
+    TODO: Other Block Entities...
 */
 
 public class BetterBlockEntities implements ClientModInitializer
@@ -30,4 +27,4 @@ public class BetterBlockEntities implements ClientModInitializer
         });
         ConfigManager.load();
     }
-}
+ }

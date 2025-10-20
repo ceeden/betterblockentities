@@ -3,21 +3,23 @@
   "package": "betterblockentities.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "sodium.AbstractBlockRenderContextAccessor",
+    "sodium.BlockRendererMixin",
+    "sodium.WorldRendererMixin",
     "AbstractBlockMixin",
-    "BellBlockEntityRendererMixin",
-    "BlockEntityRenderDispatcherMixin",
-    "BlockRendererMixin",
+    "AbstractSignBlockEntityRendererMixin",
+    "ChestBlockEntityRendererMixin",
     "ChestBlockMixin",
     "EnderChestBlockMixin",
     "RenderLayersMixin",
     "ResourcePackManagerMixin",
-    "ShulkerBoxBlockMixin",
-    "WorldRendererMixin"
+    "ShulkerBoxBlockMixin"
   ],
   "server": [],
   "injectors": {
     "defaultRequire": 1
   },
   "client": [
+
   ]
 }
