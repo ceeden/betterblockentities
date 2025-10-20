@@ -60,11 +60,8 @@ public class SignModels extends ModelGenerator {
             String baseName = wood + (hanging ? "_hanging_sign" : "_sign");
             JsonObject variants = new JsonObject();
             for (int rot = 0; rot < 16; rot++) {
-                float yRot = (rot * 22.5f) % 360f;
-
                 JsonObject variant = new JsonObject();
                 variant.addProperty("model", "minecraft:block/" + baseName);
-                variant.addProperty("y", yRot); // apply Y rotation directly
                 variants.add("rotation=" + rot, variant);
             }
 
