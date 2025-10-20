@@ -103,5 +103,15 @@ public abstract class WorldRendererMixin
                 }
             }
         }
+
+        /* global block entities like beacons etc... */
+        for(RenderSection renderSection : this.renderSectionManager.getSectionsWithGlobalEntities()) {
+            BlockEntity[] blockEntities = renderSection.getGlobalBlockEntities();
+            if (blockEntities != null) {
+                for(BlockEntity blockEntity : blockEntities) {
+                    this.extractBlockEntity(blockEntity, stack, camera, tickDelta, progression, levelRenderState);
+                }
+            }
+        }
     }
 }
