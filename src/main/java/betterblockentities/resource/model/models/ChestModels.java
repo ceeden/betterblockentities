@@ -17,10 +17,7 @@ import java.util.Set;
 */
 public class ChestModels extends ModelGenerator {
     static Set<String> names = Set.of(
-            "chest", "copper_chest", "exposed_copper_chest",
-            "oxidized_copper_chest", "trapped_chest", "weathered_copper_chest",
-            "ender_chest", "waxed_exposed_copper_chest", "waxed_copper_chest",
-            "waxed_oxidized_copper_chest", "waxed_weathered_copper_chest"
+            "chest", "trapped_chest", "ender_chest"
     );
 
 
@@ -28,61 +25,37 @@ public class ChestModels extends ModelGenerator {
         public static void generateLeftChests(Map<String, byte[]> map) {
             generateChestSide(map, "left_chest_template.json", "_left", Map.of(
                     "chest_left_lid", "normal_left",
-                    "copper_chest_left_lid", "copper_left",
-                    "exposed_copper_chest_left_lid", "copper_exposed_left",
-                    "oxidized_copper_chest_left_lid", "copper_oxidized_left",
-                    "trapped_chest_left_lid", "trapped_left",
-                    "weathered_copper_chest_left_lid", "copper_weathered_left"
+                    "trapped_chest_left_lid", "trapped_left"
             ));
 
             generateChestSide(map, "left_chest_lid_template.json", "_left", Map.of(
                     "chest_left", "normal_left",
-                    "copper_chest_left", "copper_left",
-                    "exposed_copper_chest_left", "copper_exposed_left",
-                    "oxidized_copper_chest_left", "copper_oxidized_left",
-                    "trapped_chest_left", "trapped_left",
-                    "weathered_copper_chest_left", "copper_weathered_left"
+                    "trapped_chest_left", "trapped_left"
             ));
         }
 
         public static void generateRightChests(Map<String, byte[]> map) {
             generateChestSide(map, "right_chest_template.json", "_right", Map.of(
                     "chest_right", "normal_right",
-                    "copper_chest_right", "copper_right",
-                    "exposed_copper_chest_right", "copper_exposed_right",
-                    "oxidized_copper_chest_right", "copper_oxidized_right",
-                    "trapped_chest_right", "trapped_right",
-                    "weathered_copper_chest_right", "copper_weathered_right"
+                    "trapped_chest_right", "trapped_right"
             ));
 
             generateChestSide(map, "right_chest_lid_template.json", "_right", Map.of(
                     "chest_right_lid", "normal_right",
-                    "copper_chest_right_lid", "copper_right",
-                    "exposed_copper_chest_right_lid", "copper_exposed_right",
-                    "oxidized_copper_chest_right_lid", "copper_oxidized_right",
-                    "trapped_chest_right_lid", "trapped_right",
-                    "weathered_copper_chest_right_lid", "copper_weathered_right"
+                    "trapped_chest_right_lid", "trapped_right"
             ));
         }
 
         public static void generateSingleChests(Map<String, byte[]> map) {
             generateChestSide(map, "chest_template.json", "_single", Map.of(
                     "chest", "normal",
-                    "copper_chest", "copper",
-                    "exposed_copper_chest", "copper_exposed",
-                    "oxidized_copper_chest", "copper_oxidized",
                     "trapped_chest", "trapped",
-                    "weathered_copper_chest", "copper_weathered",
                     "ender_chest", "ender"
             ));
 
             generateChestSide(map, "chest_lid_template.json", "_single", Map.of(
                     "chest_lid", "normal",
-                    "copper_chest_lid", "copper",
-                    "exposed_copper_chest_lid", "copper_exposed",
-                    "oxidized_copper_chest_lid", "copper_oxidized",
                     "trapped_chest_lid", "trapped",
-                    "weathered_copper_chest_lid", "copper_weathered",
                     "ender_chest_lid", "ender"
             ));
         }

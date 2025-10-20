@@ -5,10 +5,7 @@ import net.caffeinemc.mods.sodium.client.render.frapi.mesh.MutableQuadViewImpl;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadTransform;
 
 /* minecraft */
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.texture.Sprite;
-import net.minecraft.util.Atlases;
-import net.minecraft.util.Identifier;
 
 public class ModelTransform
 {
@@ -50,14 +47,6 @@ public class ModelTransform
             mQuad.cachedSprite(newSprite);
             return true;
         };
-    }
-
-    /* gets an existing sprite from the atlas */
-    public static Sprite getSprite(Identifier id) {
-        var atlas = MinecraftClient.getInstance()
-                .getAtlasManager()
-                .getAtlasTexture(Atlases.BLOCKS);
-        return atlas.getSprite(id);
     }
 
     private ModelTransform() {

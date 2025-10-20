@@ -6,7 +6,6 @@ import com.google.gson.*;
 /* minecraft */
 import net.minecraft.SharedConstants;
 import net.minecraft.resource.ResourceType;
-import net.minecraft.resource.PackVersion;
 
 /* java/misc */
 import java.io.InputStream;
@@ -31,14 +30,14 @@ public class PackMetadataBuilder
 
     /* generates "pack.mcmeta" file, the format of this file might change between minecraft versions */
     private byte[] createPackMcmeta() {
-        PackVersion version = SharedConstants.getGameVersion().packVersion(ResourceType.CLIENT_RESOURCES);
-        int versionNmr = version.major();
+        int version = SharedConstants.getGameVersion().packVersion(ResourceType.CLIENT_RESOURCES);
 
         JsonObject packJson = new JsonObject();
         JsonObject packInfo = new JsonObject();
-        packInfo.add("min_format", GSON.toJsonTree(new int[]{versionNmr, 0}));
-        packInfo.add("max_format", GSON.toJsonTree(new int[]{versionNmr, 0}));
+
+        packInfo.addProperty("pack_format", version);
         packInfo.addProperty("description", "BBE Resources");
+
         packJson.add("pack", packInfo);
 
         return GSON.toJson(packJson).getBytes(StandardCharsets.UTF_8);
