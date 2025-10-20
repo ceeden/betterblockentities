@@ -13,8 +13,7 @@
     "ShulkerBoxBlockMixin",
     "WorldRendererMixin",
     "sodium.AbstractBlockRenderContextAccessor",
-    "sodium.BlockRendererMixin",
-    "sodium.WorldRendererMixin"
+    "sodium.BlockRendererMixin"
   ],
   "server": [],
   "injectors": {

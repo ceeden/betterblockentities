@@ -7,7 +7,6 @@
   },
   "elements": [
     {
-<<<<<<<< HEAD:src/main/resources/assets/betterblockentities/models/block/templates/chest_template.json
       "from": [1, 0, 1],
       "to": [15, 10, 15],
       "rotation": {"angle": 0, "axis": "y", "origin": [9, 8, 9]},
@@ -21,8 +20,6 @@
       }
     },
     {
-========
->>>>>>>> 1.21.10-dev:src/main/resources/assets/betterblockentities/models/block/templates/chest_lid_template.json
       "from": [1, 9, 1],
       "to": [15, 14, 15],
       "rotation": {"angle": 0, "axis": "y", "origin": [9, 18, 9]},
