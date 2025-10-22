@@ -26,19 +26,16 @@ jobs:
           distribution: temurin
           java-version: 21
 
-      - name: Make gradle wrapper executable
-        run: chmod +x ./gradlew
-
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
           cache-read-only: false
 
       - name: Execute Gradle build
-        run: ./gradlew build
+        run: chmod +x ./gradlew build
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: bbe-artifacts-${{ steps.ref.outputs.branch }}
+          name: sodium-artifacts-${{ steps.ref.outputs.branch }}
           path: build/mods/*.jar

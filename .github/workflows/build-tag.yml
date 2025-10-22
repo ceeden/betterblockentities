@@ -30,7 +30,7 @@ jobs:
           cache-read-only: true
 
       - name: Execute Gradle build
-        run: ./gradlew build -Pbuild.release=true
+        run: chmod +x ./gradlew build -Pbuild.release=true
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4

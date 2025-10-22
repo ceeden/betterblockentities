@@ -22,7 +22,7 @@ jobs:
           cache-read-only: true
 
       - name: Execute Gradle build
-        run: ./gradlew build
+        run: chmod +x ./gradlew
 
       - name: Get branch name
         id: ref
