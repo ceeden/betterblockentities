@@ -31,5 +31,5 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: sodium-artifacts-${{ steps.ref.outputs.branch }}
+          name: bbe-artifacts-${{ steps.ref.outputs.branch }}
           path: build/mods/*.jar
