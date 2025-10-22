@@ -29,11 +29,14 @@ jobs:
         with:
           cache-read-only: true
 
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+
       - name: Execute Gradle build
-        run: chmod +x ./gradlew build -Pbuild.release=true
+        run: ./gradlew build -Pbuild.release=true
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: bbe-artifacts-${{ steps.ref.outputs.branch }}
+          name: sodium-artifacts-${{ steps.ref.outputs.branch }}
           path: build/mods/*.jar

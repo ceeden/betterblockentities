@@ -22,14 +22,10 @@ jobs:
           cache-read-only: true
 
       - name: Execute Gradle build
-        run: chmod +x ./gradlew
-
-      - name: Get branch name
-        id: ref
-        run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> "$GITHUB_OUTPUT"
+        run: ./gradlew build
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: bbe-artifacts-${{ steps.ref.outputs.branch }}
+          name: bbe-artifacts
           path: build/mods/*.jar
