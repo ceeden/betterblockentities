@@ -13,9 +13,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(AbstractBlock.class)
 public abstract class AbstractBlockMixin
 {
-    /* force all supported blocks to handled by the ChunkMesher */
+    /* apparently we do not need this? getRenderType always return type MODEL anyway... */
     @Inject(method = "getRenderType", at = @At("HEAD"), cancellable = true)
-    private void ForceToMesh(BlockState state, CallbackInfoReturnable<BlockRenderType> cir) {
+    private void forceToMesh(BlockState state, CallbackInfoReturnable<BlockRenderType> cir) {
         if (BlockEntityManager.isSupportedBlock(state.getBlock()))
             cir.setReturnValue(BlockRenderType.MODEL);
     }

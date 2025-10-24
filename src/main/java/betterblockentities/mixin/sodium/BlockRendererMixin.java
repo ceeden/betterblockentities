@@ -2,6 +2,7 @@ package betterblockentities.mixin.sodium;
 
 /* local */
 import betterblockentities.ModelLoader;
+import betterblockentities.gui.ConfigManager;
 import betterblockentities.helpers.BlockEntityManager;
 import betterblockentities.helpers.BlockEntityTracker;
 import betterblockentities.helpers.BlockRenderHelper;
@@ -18,12 +19,18 @@ import net.fabricmc.fabric.api.renderer.v1.model.FabricBlockStateModel;
 
 /* minecraft */
 import net.minecraft.block.*;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.RenderLayers;
+import net.minecraft.client.render.entity.model.EntityModelLayer;
+import net.minecraft.client.render.entity.model.EntityModelLayers;
+import net.minecraft.client.render.entity.model.LoadedEntityModels;
 import net.minecraft.client.render.model.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
 /* mixin */
+import net.minecraft.util.math.random.Random;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -50,7 +57,11 @@ public class BlockRendererMixin {
         Block block = state.getBlock();
 
         /* is the block supported? */
-        if (!BlockEntityManager.isSupportedBlock(block)) return;
+        if (BlockEntityManager.isSupportedBlock(block) && !ConfigManager.CONFIG.master_optimize) {
+            /* exclude bell because it has parts in the mesh by default */
+            if (block instanceof BellBlock) return;
+            ci.cancel(); return;
+        }
 
         /* lazy load our models, should probably do this elsewhere */
         ModelLoader.loadModels();
@@ -59,21 +70,27 @@ public class BlockRendererMixin {
         AbstractBlockRenderContextAccessor acc = setupContext(state, pos, origin);
         final QuadEmitter emitter = acc.getEmitterInvoke();
 
-        /* handle signs, rotate them with our custom transform */
+        /* handle these signs differently as they have a blockstate rotation property, rotate them with our custom transform */
         if (block instanceof SignBlock || block instanceof HangingSignBlock) {
-            ci.cancel();
+            ci.cancel(); if (!ConfigManager.CONFIG.optimize_signs) return;
+
             emitter.pushTransform(ModelTransform.rotateY(BlockRenderHelper.computeSignRotation(state)));
             ((FabricBlockStateModel)model).emitQuads(emitter, acc.getLevel(), pos, state, acc.getRandom(), acc::isFaceCulledInvoke);
             emitter.popTransform();
-            restoreContext();
+        }
+
+        /* nothing special here */
+        else if (block instanceof WallHangingSignBlock || block instanceof WallSignBlock) {
+            if (!ConfigManager.CONFIG.optimize_signs) ci.cancel();
         }
 
         /*
             split trunk/base and lid quads from the MultiPartBlockStateModel, no transform needed as this is handled in our generated
             blockstate jsons
         */
-        else if (block instanceof ChestBlock || block instanceof EnderChestBlock || block instanceof ShulkerBoxBlock) {
-            ci.cancel();
+        else if (block instanceof ChestBlock || block instanceof EnderChestBlock) {
+            ci.cancel(); if (!ConfigManager.CONFIG.optimize_chests) return;
+
             List<BlockModelPart> parts = model.getParts(acc.getRandom());
 
             /*
@@ -90,8 +107,27 @@ public class BlockRendererMixin {
             if (!BlockEntityTracker.animMap.contains(pos))
                 BlockRenderHelper.emitQuads(lidParts, emitter, acc::isFaceCulledInvoke);
             BlockRenderHelper.emitQuads(trunkParts, emitter, acc::isFaceCulledInvoke);
+        }
 
-            restoreContext();
+        else if (block instanceof ShulkerBoxBlock) {
+            ci.cancel(); if (!ConfigManager.CONFIG.optimize_shulkers) return;
+
+            List<BlockModelPart> parts = model.getParts(acc.getRandom());
+
+            /*
+                super pseudo, this is straight ass, couldn't come up with a better way to do it sooo...
+                TODO: find a better way to identify which part is lid and which part is base/trunk!
+            */
+            int quadThreshold = (block instanceof ShulkerBoxBlock) ? 10 : 6;
+            Map<Boolean, List<BlockModelPart>> partitioned = parts.stream()
+                    .collect(Collectors.partitioningBy(p -> p.getQuads(null).size() > quadThreshold));
+
+            List<BlockModelPart> lidParts = partitioned.get(true);
+            List<BlockModelPart> trunkParts = partitioned.get(false);
+
+            if (!BlockEntityTracker.animMap.contains(pos))
+                BlockRenderHelper.emitQuads(lidParts, emitter, acc::isFaceCulledInvoke);
+            BlockRenderHelper.emitQuads(trunkParts, emitter, acc::isFaceCulledInvoke);
         }
 
         /*
@@ -102,20 +138,31 @@ public class BlockRendererMixin {
             generating models, blockstate jsons, etc...
         */
         else if (block instanceof BellBlock) {
-            ci.cancel();
+            if (!ConfigManager.CONFIG.optimize_bells) return; ci.cancel();
 
             if (!BlockEntityTracker.animMap.contains(pos))
                 ((FabricBlockStateModel)ModelLoader.bell_body).emitQuads(emitter, acc.getLevel(), pos, state, acc.getRandom(), acc::isFaceCulledInvoke);
             ((FabricBlockStateModel)model).emitQuads(emitter, acc.getLevel(), pos, state, acc.getRandom(), acc::isFaceCulledInvoke);
         }
 
-        /* don't emit to the mesh if the block is supported and animating but not caught above */
-        else if (BlockEntityTracker.animMap.contains(pos)) {
-            ci.cancel();
+        else if (block instanceof DecoratedPotBlock) {
+            if (!ConfigManager.CONFIG.optimize_decoratedpots) {
+                ci.cancel(); return;
+            }
+            if (BlockEntityTracker.animMap.contains(pos)) ci.cancel();
         }
+
+        else if (block instanceof BedBlock) {
+            if (!ConfigManager.CONFIG.optimize_beds) ci.cancel();
+        }
+
+        /* don't emit to the mesh if the block is supported and animating but not caught above */
+        else if (BlockEntityTracker.animMap.contains(pos)) ci.cancel();
+
+        restoreContext();
     }
 
-    /* setup the mesh context, straight copy/paste from the original renderModel function */
+    /* setup the "mesh" context, straight copy/paste from the original renderModel function */
     @Unique
     AbstractBlockRenderContextAccessor setupContext(BlockState state, BlockPos pos, BlockPos origin) {
         AbstractBlockRenderContextAccessor acc = (AbstractBlockRenderContextAccessor)(Object)this;

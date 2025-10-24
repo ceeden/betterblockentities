@@ -35,13 +35,8 @@ import java.util.SortedSet;
 @Mixin(SodiumWorldRenderer.class)
 public abstract class WorldRendererMixin
 {
-    @Shadow
-    private RenderSectionManager renderSectionManager;
-
-    @Shadow
-    private void extractBlockEntity(BlockEntity blockEntity, MatrixStack poseStack, Camera camera, float tickDelta, Long2ObjectMap<SortedSet<BlockBreakingInfo>> progression, WorldRenderState levelRenderState)
-    {
-    }
+    @Shadow private RenderSectionManager renderSectionManager;
+    @Shadow private void extractBlockEntity(BlockEntity blockEntity, MatrixStack poseStack, Camera camera, float tickDelta, Long2ObjectMap<SortedSet<BlockBreakingInfo>> progression, WorldRenderState levelRenderState) {}
 
     /**
         @author ceeden
@@ -58,16 +53,12 @@ public abstract class WorldRendererMixin
     @Overwrite
     public void extractBlockEntities(Camera camera, float tickDelta, Long2ObjectMap<SortedSet<BlockBreakingInfo>> progression, WorldRenderState levelRenderState)
     {
-        if (!ConfigManager.CONFIG.use_animations)
-            return;
-
         MatrixStack stack = new MatrixStack();
 
         SortedRenderLists renderLists = this.renderSectionManager.getRenderLists();
         for (Iterator<ChunkRenderList> it = renderLists.iterator(); it.hasNext();)
         {
             ChunkRenderList renderList = it.next();
-
             RenderRegion renderRegion = renderList.getRegion();
             ByteIterator renderSectionIterator = renderList.sectionsWithEntitiesIterator();
 
@@ -98,7 +89,7 @@ public abstract class WorldRendererMixin
                         section.setPendingUpdate(ChunkUpdateTypes.REBUILD, 0);
                     }
                     BlockEntityTracker.sectionsToUpdate.clear();
-                    this.renderSectionManager.updateChunks(true);
+                    //this.renderSectionManager.updateChunks(true);
                     this.renderSectionManager.markGraphDirty();
                 }
             }
