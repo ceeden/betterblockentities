@@ -60,9 +60,6 @@ public abstract class WorldRendererMixin
     @Overwrite
     private void renderBlockEntities(MatrixStack matrices, BufferBuilderStorage bufferBuilders, Long2ObjectMap<SortedSet<BlockBreakingInfo>> blockBreakingProgressions, float tickDelta, VertexConsumerProvider.Immediate immediate, double x, double y, double z, BlockEntityRenderDispatcher blockEntityRenderer, ClientPlayerEntity player, LocalBooleanRef isGlowing)
     {
-        if (!ConfigManager.CONFIG.use_animations)
-            return;
-
         SortedRenderLists renderLists = this.renderSectionManager.getRenderLists();
         for (Iterator<ChunkRenderList> it = renderLists.iterator(); it.hasNext();)
         {
@@ -97,7 +94,7 @@ public abstract class WorldRendererMixin
                         section.setPendingUpdate(ChunkUpdateTypes.REBUILD, 0);
                     }
                     BlockEntityTracker.sectionsToUpdate.clear();
-                    this.renderSectionManager.updateChunks(true);
+                    //this.renderSectionManager.updateChunks(true);
                     this.renderSectionManager.markGraphDirty();
                 }
             }

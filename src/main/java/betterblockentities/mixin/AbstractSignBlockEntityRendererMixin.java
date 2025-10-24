@@ -1,5 +1,8 @@
 package betterblockentities.mixin;
 
+/* local */
+import betterblockentities.gui.ConfigManager;
+
 /* minecraft */
 import net.minecraft.block.AbstractSignBlock;
 import net.minecraft.block.BlockState;
@@ -33,6 +36,8 @@ public abstract class AbstractSignBlockEntityRendererMixin {
     /* to update just goto the AbstractSignBlockEntityRenderer class and IDEA -> View -> Show Bytecode */
     @Inject(method = "render(Lnet/minecraft/block/entity/SignBlockEntity;Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;IILnet/minecraft/block/BlockState;Lnet/minecraft/block/AbstractSignBlock;Lnet/minecraft/block/WoodType;Lnet/minecraft/client/model/Model;)V", at = @At("HEAD"), cancellable = true)
     private void render(SignBlockEntity blockEntity, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay, BlockState state, AbstractSignBlock block, WoodType woodType, Model model, CallbackInfo ci) {
+        if (!ConfigManager.CONFIG.optimize_signs || !ConfigManager.CONFIG.master_optimize) return;
+
         ci.cancel();
 
         SignText frontText = blockEntity.getFrontText();
