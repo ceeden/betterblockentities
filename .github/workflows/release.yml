@@ -31,5 +31,5 @@ jobs:
       - name: Upload assets to GitHub
         uses: AButler/upload-release-assets@v2.0
         with:
-          files: 'build/mods/*.jar'
+          files: 'build/libs/*.jar'
           repo-token: ${{ secrets.GITHUB_TOKEN }}
