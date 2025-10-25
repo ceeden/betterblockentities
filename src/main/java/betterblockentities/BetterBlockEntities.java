@@ -20,8 +20,6 @@ public class BetterBlockEntities implements ClientModInitializer
 {
     @Override
     public void onInitializeClient() {
-        ResourceBuilder.buildPack();
-
         ModelLoadingPlugin.register(pluginContext -> {
             new ModelLoader().initialize(pluginContext);
         });

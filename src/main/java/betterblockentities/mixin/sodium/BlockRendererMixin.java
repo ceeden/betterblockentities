@@ -147,7 +147,7 @@ public class BlockRendererMixin {
         }
 
         else if (block instanceof BedBlock) {
-            if (!ConfigManager.CONFIG.optimize_beds) ci.cancel();
+            //if (!ConfigManager.CONFIG.optimize_beds) ci.cancel();
         }
 
         /* don't emit to the mesh if the block is supported and animating but not caught above */

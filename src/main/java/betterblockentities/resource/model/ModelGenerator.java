@@ -1,6 +1,7 @@
 package betterblockentities.resource.model;
 
 /* gson */
+import betterblockentities.gui.ConfigManager;
 import betterblockentities.resource.model.models.*;
 import betterblockentities.resource.model.util.TemplateLoader;
 import com.google.gson.*;
@@ -21,24 +22,33 @@ public class ModelGenerator
         Map<String, byte[]> entries = new HashMap<>();
 
         /* chests */
-        ChestModels.Model.generateLeftChests(entries);
-        ChestModels.Model.generateRightChests(entries);
-        ChestModels.Model.generateSingleChests(entries);
-        ChestModels.BlockState.generateChestBlockstates(entries);
+        if (ConfigManager.CONFIG.optimize_signs) {
+            ChestModels.Model.generateLeftChests(entries);
+            ChestModels.Model.generateRightChests(entries);
+            ChestModels.Model.generateSingleChests(entries);
+            ChestModels.BlockState.generateChestBlockstates(entries);
+        }
 
         /* beds */
-        BedModels.Model.generateBedsHead(entries);
-        BedModels.Model.generateBedsFoot(entries);
-        BedModels.BlockState.generateBedBlockstates(entries);
+        if (ConfigManager.CONFIG.optimize_beds) {
+            BedModels.Model.generateBedsHead(entries);
+            BedModels.Model.generateBedsFoot(entries);
+            BedModels.BlockState.generateBedBlockstates(entries);
+        }
 
         /* shulkers */
-        ShulkerModels.Model.generateShulkerBase(entries);
-        ShulkerModels.Model.generateShulkerLid(entries);
-        ShulkerModels.BlockState.generateShulkerBlockstates(entries);
+        if (ConfigManager.CONFIG.optimize_shulkers) {
+            ShulkerModels.Model.generateShulkerBase(entries);
+            ShulkerModels.Model.generateShulkerLid(entries);
+            ShulkerModels.BlockState.generateShulkerBlockstates(entries);
+        }
 
         /* signs */
-        SignModels.Model.generateSignModels(entries);
-        SignModels.BlockState.generateSignBlockstates(entries);
+        if (ConfigManager.CONFIG.optimize_signs) {
+            SignModels.Model.generateSignModels(entries);
+            SignModels.BlockState.generateSignBlockstates(entries);
+        }
+
         return entries;
     }
 
