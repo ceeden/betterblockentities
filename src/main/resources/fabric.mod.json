@@ -3,15 +3,15 @@
   "id": "betterblockentities",
   "version": "${version}",
 
-  "name": "BetterBlockEntities",
+  "name": "BBE",
   "description": "Optimize and customize block entity rendering with a more modern approach.",
   "authors": [
     "ceeden"
   ],
   "contact": {
-    "homepage": "",
-    "issues": "",
-    "sources": ""
+    "homepage": "https://github.com/ceeden/betterblockentities",
+    "issues": "https://github.com/ceeden/betterblockentities/issues",
+    "sources": "https://github.com/ceeden/betterblockentities"
   },
 
   "license": "LGPLv3",
@@ -25,13 +25,6 @@
     "modmenu": [
       "betterblockentities.gui.ModMenu"
     ]
-  },
-  "fabric": {
-    "client": {
-      "modelLoadingPlugins": [
-        "betterblockentities.ModelLoader"
-      ]
-    }
   },
   "mixins": [
     "betterblockentities.mixins.json"
@@ -47,7 +40,7 @@
   "custom": {
     "modmenu": {
       "links": {
-
+        "modmenu.discord": "https://discord.gg/NdX9BYpTtz"
       }
     }
   }

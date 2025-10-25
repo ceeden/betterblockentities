@@ -9,9 +9,6 @@ import java.util.*;
 
 public class ResourceBuilder
 {
-    private static ResourcePack pack;
-    private static ResourcePackProfile packProfile;
-
     /* generate the "in memory" resource pack to later be passed to our pack profile */
     public static byte[] buildZip() {
         PackMetadataBuilder meta = new PackMetadataBuilder();
@@ -26,30 +23,23 @@ public class ResourceBuilder
     }
 
     /* builds the resource pack and its profile, should be called once on mod initialization */
-    public static void buildPack() {
+    public static ResourcePackProfile buildPackProfile() {
         byte[] packData = buildZip();
-        pack = new Pack("betterblockentities-generated", packData);
+        ResourcePack pack = new Pack("betterblockentities-generated", packData);
 
         ResourcePackProfile.PackFactory factory = new ResourcePackProfile.PackFactory() {
             @Override
             public ResourcePack open(ResourcePackInfo info) {
-                return ResourceBuilder.getPack();
+                return pack;
             }
 
             @Override
             public ResourcePack openWithOverlays(ResourcePackInfo info, ResourcePackProfile.Metadata metadata) {
-                return ResourceBuilder.getPack();
+                return pack;
             }
         };
 
         ResourcePackPosition pos = new ResourcePackPosition(true, ResourcePackProfile.InsertionPosition.TOP, true);
-        packProfile = ResourcePackProfile.create(getPack().getInfo(), factory, ResourceType.CLIENT_RESOURCES, pos);
-    }
-
-    private static ResourcePack getPack() {
-        return pack;
-    }
-    public static ResourcePackProfile getPackProfile() {
-        return packProfile;
+        return ResourcePackProfile.create(pack.getInfo(), factory, ResourceType.CLIENT_RESOURCES, pos);
     }
 }
