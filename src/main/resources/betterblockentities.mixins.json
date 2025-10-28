@@ -5,18 +5,23 @@
   "mixins": [
     "AbstractBlockMixin",
     "AbstractSignBlockEntityRendererMixin",
+    "BellBlockEntityMixin",
+    "BlockEntityMixin",
+    "ChestBlockEntityMixin",
     "ChestBlockEntityRendererMixin",
-    "ChestBlockMixin",
-    "EnderChestBlockMixin",
+    "DecoratedPotBlockEntityMixin",
+    "EnderChestBlockEntityMixin",
     "RenderLayersMixin",
     "ResourcePackManagerMixin",
-    "ShulkerBoxBlockMixin",
+    "ShulkerBoxBlockEntityMixin",
     "sodium.AbstractBlockRenderContextAccessor",
     "sodium.BlockRendererMixin",
-    "sodium.WorldRendererMixin"
+    "sodium.SodiumWorldRendererMixin"
   ],
   "server": [],
   "injectors": {
     "defaultRequire": 1
-  }
+  },
+  "client": [
+  ]
 }
