@@ -14,6 +14,7 @@
     "RenderLayersMixin",
     "ResourcePackManagerMixin",
     "ShulkerBoxBlockEntityMixin",
+    "OrderedRenderCommandQueueImplMixin",
     "sodium.AbstractBlockRenderContextAccessor",
     "sodium.BlockRendererMixin",
     "sodium.SodiumWorldRendererMixin"
@@ -23,5 +24,6 @@
     "defaultRequire": 1
   },
   "client": [
+
   ]
 }
