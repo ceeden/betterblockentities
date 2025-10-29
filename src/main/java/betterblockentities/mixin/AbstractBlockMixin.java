@@ -1,7 +1,9 @@
 package betterblockentities.mixin;
 
+/* local */
+import betterblockentities.util.BlockEntityManager;
+
 /* minecraft */
-import betterblockentities.helpers.BlockEntityManager;
 import net.minecraft.block.*;
 
 /* mixin */

@@ -4,7 +4,6 @@ package betterblockentities;
 import betterblockentities.gui.ConfigManager;
 
 /* fabric */
-import betterblockentities.resource.pack.ResourceBuilder;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
 import net.fabricmc.api.ClientModInitializer;
 
@@ -13,16 +12,21 @@ import net.fabricmc.api.ClientModInitializer;
      sodium too)
     TODO: Improve signs, make them completely baked into meshes (sign text)
     TODO: Add support for pottery patterns (decorated pots)
+    TODO: Check sign ticker logic and implement same approach from the other BE´s
+          if possible
     TODO: Other Block Entities...
 */
 
-public class BetterBlockEntities implements ClientModInitializer
-{
+public class BetterBlockEntities implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
-        ModelLoadingPlugin.register(pluginContext -> {
-            new ModelLoader().initialize(pluginContext);
-        });
+        /* register our model loader */
+        ModelLoadingPlugin.register(pluginContext -> { new ModelLoader().initialize(pluginContext); });
+
+        /* load config from disk file */
         ConfigManager.load();
+
+        /* updates the list of supported block entity types and cached config in BlockEntityManager */
+        ConfigManager.refreshSupportedTypes();
     }
  }

@@ -1,7 +1,9 @@
-package betterblockentities.helpers;
+package betterblockentities.util;
 
 /* sodium */
 import net.caffeinemc.mods.sodium.client.render.frapi.mesh.MutableQuadViewImpl;
+
+/* fabric */
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadTransform;
 
 /* minecraft */

@@ -1,4 +1,4 @@
-package betterblockentities.helpers;
+package betterblockentities.util;
 
 /* fabric */
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;

@@ -1,13 +1,16 @@
 package betterblockentities.resource.model.models;
 
+/* local */
 import betterblockentities.resource.model.ModelGenerator;
+
+/* gson */
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
+/* java/misc */
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.Set;
-
 
 /*
     generates blockstates(multipart) jsons for each chest variant (which will create a model type of

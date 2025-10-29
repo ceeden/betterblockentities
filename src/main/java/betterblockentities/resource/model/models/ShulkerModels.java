@@ -1,10 +1,16 @@
 package betterblockentities.resource.model.models;
 
+/* local */
 import betterblockentities.resource.model.ModelGenerator;
-import com.google.gson.JsonObject;
+
+/* minecraft */
 import net.minecraft.util.DyeColor;
+
+/* gson */
+import com.google.gson.JsonObject;
 import com.google.gson.JsonArray;
 
+/* java/misc */
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 

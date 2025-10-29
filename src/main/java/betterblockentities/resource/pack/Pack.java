@@ -1,15 +1,19 @@
 package betterblockentities.resource.pack;
 
+/* gson */
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.serialization.JsonOps;
+
+/* minecraft */
 import net.minecraft.resource.*;
 import net.minecraft.resource.metadata.ResourceMetadataSerializer;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-import org.jetbrains.annotations.Nullable;
 
+/* java/misc */
+import org.jetbrains.annotations.Nullable;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -98,7 +102,7 @@ public class Pack implements ResourcePack {
 
     @Override
     public ResourcePackInfo getInfo() {
-        return new ResourcePackInfo(name, Text.literal("bbe-generated"), ResourcePackSource.BUILTIN, Optional.empty());
+        return new ResourcePackInfo(name, Text.literal("BBE-generated"), ResourcePackSource.BUILTIN, Optional.empty());
     }
 
     @Override
