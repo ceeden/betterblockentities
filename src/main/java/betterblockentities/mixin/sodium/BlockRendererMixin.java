@@ -65,9 +65,6 @@ public class BlockRendererMixin {
             ci.cancel(); return;
         }
 
-        /* lazy load our models, should probably do this elsewhere */
-        ModelLoader.loadModels();
-
         /* set up the mesh context */
         AbstractBlockRenderContextAccessor acc = setupContext(state, pos, origin);
         final QuadEmitter emitter = acc.getEmitterInvoke();
@@ -145,8 +142,11 @@ public class BlockRendererMixin {
             if (!ConfigManager.CONFIG.optimize_bells) return; ci.cancel();
 
             BlockEntityExt ext = (BlockEntityExt) blockEntity;
-            if (!ext.getRemoveChunkVariant())
-                ((FabricBlockStateModel)ModelLoader.bell_body).emitQuads(emitter, acc.getLevel(), pos, state, acc.getRandom(), acc::isFaceCulledInvoke);
+            if (!ext.getRemoveChunkVariant()) {
+                BakedModelManager manager = MinecraftClient.getInstance().getBakedModelManager();
+                BlockStateModel bell_body = manager.getModel(ModelLoader.BELL_BODY_KEY);
+                ((FabricBlockStateModel)bell_body).emitQuads(emitter, acc.getLevel(), pos, state, acc.getRandom(), acc::isFaceCulledInvoke);
+            }
             ((FabricBlockStateModel)model).emitQuads(emitter, acc.getLevel(), pos, state, acc.getRandom(), acc::isFaceCulledInvoke);
         }
 
