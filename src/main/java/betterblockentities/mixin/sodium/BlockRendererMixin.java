@@ -20,8 +20,10 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.RenderLayers;
 import net.minecraft.client.render.model.*;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.random.Random;
 
 /* mixin */
 import org.spongepowered.asm.mixin.*;
@@ -32,15 +34,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 /* java/misc */
 import org.joml.Vector3f;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-/*
-    TODO: merge quads into one list and emit once for faster meshing
-    TODO: move model loading to a more appropriate place
-    TODO: general code clean up
- */
 
 @Pseudo
 @Mixin(BlockRenderer.class)
@@ -52,7 +50,12 @@ public class BlockRendererMixin {
     @Inject(method = "renderModel", at = @At("HEAD"), cancellable = true)
     private void renderModel(BlockStateModel model, BlockState state, BlockPos pos, BlockPos origin, CallbackInfo ci) {
         Block block = state.getBlock();
-        BlockEntity blockEntity = MinecraftClient.getInstance().world.getBlockEntity(pos);
+        ClientWorld world = MinecraftClient.getInstance().world;
+
+        if (world == null)
+            return;
+
+        BlockEntity blockEntity = world.getBlockEntity(pos);
 
         /* safe cast BlockEntityExt to prevent crashes if instance is null */
         BlockEntityExt ext = (blockEntity instanceof BlockEntityExt bex) ? bex : null;
@@ -98,32 +101,43 @@ public class BlockRendererMixin {
             List<BlockModelPart> parts = model.getParts(acc.getRandom());
 
             int quadThreshold = isShulker ? 10 : 6;
+
             Map<Boolean, List<BlockModelPart>> partitioned = parts.stream()
                     .collect(Collectors.partitioningBy(p -> p.getQuads(null).size() > quadThreshold));
 
-            List<BlockModelPart> lidParts = partitioned.get(true);
+            List<BlockModelPart> lidParts   = partitioned.get(true);
             List<BlockModelPart> trunkParts = partitioned.get(false);
 
-            if (shouldRender)
-                BlockRenderHelper.emitQuads(lidParts, emitter, acc::isFaceCulledInvoke);
-            BlockRenderHelper.emitQuads(trunkParts, emitter, acc::isFaceCulledInvoke);
+            List<BlockModelPart> merged = new ArrayList<>(trunkParts);
+            if (shouldRender) {
+                merged.addAll(lidParts);
+            }
+
+            BlockRenderHelper.emitQuads(merged, emitter, acc::isFaceCulledInvoke);
         }
 
         /* BELLS */
         else if (block instanceof BellBlock) {
             if (!ConfigManager.CONFIG.optimize_bells) return;
-
             ci.cancel();
+
+            Random rand = acc.getRandom();
+
+            List<BlockModelPart> bell_part = model.getParts(rand);
+
+            List<BlockModelPart> bell_body_part = new ArrayList<>();
 
             if (shouldRender) {
                 BakedModelManager manager = MinecraftClient.getInstance().getBakedModelManager();
                 BlockStateModel bell_body = manager.getModel(ModelLoader.BELL_BODY_KEY);
-
-                ((FabricBlockStateModel) bell_body).emitQuads(
-                        emitter, acc.getLevel(), pos, state, acc.getRandom(), acc::isFaceCulledInvoke);
+                bell_body_part.addAll(bell_body.getParts(rand));
             }
-            ((FabricBlockStateModel) model).emitQuads(
-                    emitter, acc.getLevel(), pos, state, acc.getRandom(), acc::isFaceCulledInvoke);
+
+            List<BlockModelPart> merged = new ArrayList<>(bell_part);
+            if (!bell_body_part.isEmpty())
+                merged.addAll(bell_body_part);
+
+            BlockRenderHelper.emitQuads(merged, emitter, acc::isFaceCulledInvoke);
         }
 
         /* DECORATED POTS */
