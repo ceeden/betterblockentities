@@ -31,7 +31,11 @@ public class ResourcePackManagerMixin
             locals = LocalCapture.CAPTURE_FAILSOFT
     )
     private void injectGeneratedPackProfiles(CallbackInfoReturnable<Map<String, ResourcePackProfile>> cir, Map<String, ResourcePackProfile> map) {
-        ResourcePackProfile generated = ResourceBuilder.getPackProfile();
+        ResourcePackProfile generated = ResourceBuilder.buildPackProfile();
+
+        /* remove the old profile if it exists */
+        map.remove(generated.getId());
+
         if (generated != null && !map.containsKey(generated.getId())) {
             map.put(generated.getId(), generated);
         }
