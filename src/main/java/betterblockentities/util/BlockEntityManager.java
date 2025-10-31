@@ -2,10 +2,14 @@ package betterblockentities.util;
 
 /* local */
 import betterblockentities.chunk.ChunkUpdateDispatcher;
+import betterblockentities.gui.ConfigManager;
 
 /* minecraft */
 import net.minecraft.block.*;
 import net.minecraft.block.entity.*;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.entity.Entity;
+import net.minecraft.util.math.Vec3d;
 
 /* java/misc */
 import java.util.Collections;
@@ -54,8 +58,17 @@ public class BlockEntityManager {
             long now = blockEntity.getWorld().getTime();
             return now - pot.lastWobbleTime < pot.lastWobbleType.lengthInTicks;
         }
-        if (signText && blockEntity instanceof SignBlockEntity)
-            return true;
+        if (signText && blockEntity instanceof SignBlockEntity) {
+            //int chunkRenderDistance = MinecraftClient.getInstance().options.getViewDistance().getValue();
+
+            /* distance in blocks not chunks */
+            double maxSignTextDistance = ConfigManager.CONFIG.sign_text_render_distance;
+
+            Entity entity = MinecraftClient.getInstance().getCameraEntity();
+            boolean shouldRenderText = entity.squaredDistanceTo(Vec3d.ofCenter(blockEntity.getPos())) < maxSignTextDistance * maxSignTextDistance;
+            if (shouldRenderText)
+                return true;
+        }
         return false;
     }
 

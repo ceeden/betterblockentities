@@ -31,6 +31,7 @@ public class ConfigScreen extends GameOptionsScreen {
             bellAnimOpt,
             potAnimOpt;
     private SimpleOption<Integer> smoothness;
+    private SimpleOption<Integer> signDistance;
 
     public ConfigScreen(Screen parent) {
         super(parent, MinecraftClient.getInstance().options, Text.translatable("Better Block Entities"));
@@ -49,6 +50,7 @@ public class ConfigScreen extends GameOptionsScreen {
         bellOpt = optimizeBells();
         potOpt = optimizeDecoratedPots();
         smoothness = extraRenderPasses();
+        signDistance = signTextRenderDistance();
 
         chestAnimOpt = chestsAnimations();
         signTextOpt = renderSignText();
@@ -66,6 +68,7 @@ public class ConfigScreen extends GameOptionsScreen {
                 bedOpt
         );
         this.body.addSingleOptionEntry(smoothness);
+        this.body.addSingleOptionEntry(signDistance);
         updateDependentOptions(masterToggle.getValue());
     }
 
@@ -207,6 +210,17 @@ public class ConfigScreen extends GameOptionsScreen {
         );
     }
 
+    private SimpleOption<Integer> signTextRenderDistance() {
+        return new SimpleOption<>(
+                "Sign Text Render Distance",
+                value -> Tooltip.of(Text.of("§7The amount of blocks the sign text will be stop rendering at")),
+                (text, value) -> Text.of(text.getString() + ": " + value),
+                new SimpleOption.ValidatingIntSliderCallbacks(0, 256),
+                ConfigManager.CONFIG.sign_text_render_distance,
+                v -> ConfigManager.CONFIG.sign_text_render_distance = v
+        );
+    }
+
     private SimpleOption<Integer> extraRenderPasses() {
         return new SimpleOption<>(
                 "Extra Render Passes",
@@ -244,6 +258,7 @@ public class ConfigScreen extends GameOptionsScreen {
         setOptionActive(potAnimOpt, enabled && potOpt.getValue());
 
         setOptionActive(smoothness, enabled);
+        setOptionActive(signDistance, enabled);
     }
 
     private void setOptionActive(SimpleOption<?> option, boolean active) {

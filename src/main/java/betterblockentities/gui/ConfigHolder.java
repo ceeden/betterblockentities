@@ -17,6 +17,7 @@ public class ConfigHolder
     public boolean bell_animations = true;
     public boolean pot_animations = true;
 
+    public int sign_text_render_distance = 16;
     public int smoothness_slider = 25;
 
     public ConfigHolder copy() {
