@@ -54,120 +54,95 @@ public class BlockRendererMixin {
         Block block = state.getBlock();
         BlockEntity blockEntity = MinecraftClient.getInstance().world.getBlockEntity(pos);
 
-        /* is the block supported and do we have optimizations enabled? */
-        if (BlockEntityManager.isSupportedBlock(block) && !ConfigManager.CONFIG.master_optimize) {
-            /* exclude bell because it has parts in the mesh by default */
-            if (block instanceof BellBlock) return;
+        /* safe cast BlockEntityExt to prevent crashes if instance is null */
+        BlockEntityExt ext = (blockEntity instanceof BlockEntityExt bex) ? bex : null;
+        boolean shouldRender = shouldRender(ext);
 
-            /* exclude beds because resource packs might add stuff */
+        if (BlockEntityManager.isSupportedBlock(block) && !ConfigManager.CONFIG.master_optimize) {
+            if (block instanceof BellBlock) return;
             if (block instanceof BedBlock) return;
 
-            ci.cancel(); return;
+            ci.cancel();
+            return;
         }
 
-        /* set up the mesh context */
+        /* setup context */
         AbstractBlockRenderContextAccessor acc = setupContext(state, pos, origin);
         final QuadEmitter emitter = acc.getEmitterInvoke();
 
-        /* handle these signs differently as they have a blockstate rotation property, rotate them with our custom transform */
+        /* SIGNS */
         if (block instanceof SignBlock || block instanceof HangingSignBlock) {
-            ci.cancel(); if (!ConfigManager.CONFIG.optimize_signs) return;
+            ci.cancel();
+
+            if (!ConfigManager.CONFIG.optimize_signs) return;
 
             emitter.pushTransform(ModelTransform.rotateY(BlockRenderHelper.computeSignRotation(state)));
-            ((FabricBlockStateModel)model).emitQuads(emitter, acc.getLevel(), pos, state, acc.getRandom(), acc::isFaceCulledInvoke);
+            ((FabricBlockStateModel) model).emitQuads(emitter, acc.getLevel(), pos, state, acc.getRandom(), acc::isFaceCulledInvoke);
             emitter.popTransform();
         }
-
-        /* nothing special here */
         else if (block instanceof WallHangingSignBlock || block instanceof WallSignBlock) {
-            if (!ConfigManager.CONFIG.optimize_signs) ci.cancel();
-        }
-
-        /*
-            split trunk/base and lid quads from the MultiPartBlockStateModel, no transform needed as this is handled in our generated
-            blockstate jsons
-        */
-        else if (block instanceof ChestBlock || block instanceof EnderChestBlock) {
-            ci.cancel(); if (!ConfigManager.CONFIG.optimize_chests) return;
-
-            List<BlockModelPart> parts = model.getParts(acc.getRandom());
-
-            /*
-                super pseudo, this is straight ass, couldn't come up with a better way to do it sooo...
-                TODO: find a better way to identify which part is lid and which part is base/trunk!
-            */
-            int quadThreshold = (block instanceof ShulkerBoxBlock) ? 10 : 6;
-            Map<Boolean, List<BlockModelPart>> partitioned = parts.stream()
-                    .collect(Collectors.partitioningBy(p -> p.getQuads(null).size() > quadThreshold));
-
-            List<BlockModelPart> lidParts = partitioned.get(true);
-            List<BlockModelPart> trunkParts = partitioned.get(false);
-
-            BlockEntityExt ext = (BlockEntityExt) blockEntity;
-            if (!ext.getRemoveChunkVariant())
-                BlockRenderHelper.emitQuads(lidParts, emitter, acc::isFaceCulledInvoke);
-            BlockRenderHelper.emitQuads(trunkParts, emitter, acc::isFaceCulledInvoke);
-        }
-
-        else if (block instanceof ShulkerBoxBlock) {
-            ci.cancel(); if (!ConfigManager.CONFIG.optimize_shulkers) return;
-
-            List<BlockModelPart> parts = model.getParts(acc.getRandom());
-
-            /*
-                super pseudo, this is straight ass, couldn't come up with a better way to do it sooo...
-                TODO: find a better way to identify which part is lid and which part is base/trunk!
-            */
-            int quadThreshold = (block instanceof ShulkerBoxBlock) ? 10 : 6;
-            Map<Boolean, List<BlockModelPart>> partitioned = parts.stream()
-                    .collect(Collectors.partitioningBy(p -> p.getQuads(null).size() > quadThreshold));
-
-            List<BlockModelPart> lidParts = partitioned.get(true);
-            List<BlockModelPart> trunkParts = partitioned.get(false);
-
-            BlockEntityExt ext = (BlockEntityExt) blockEntity;
-            if (!ext.getRemoveChunkVariant())
-                BlockRenderHelper.emitQuads(lidParts, emitter, acc::isFaceCulledInvoke);
-            BlockRenderHelper.emitQuads(trunkParts, emitter, acc::isFaceCulledInvoke);
-        }
-
-        /*
-            nothing special for bells, because it already emits/renders the bars, post, etc. in the mesh
-            so we just add in the bell body(we could probably retrieve this from else where than our
-            custom model loader probably) and remove it when we are animating. much less code doing
-            it like this instead of copying the chest setup and using a MultiPartBlockStateModel,
-            generating models, blockstate jsons, etc...
-        */
-        else if (block instanceof BellBlock) {
-            if (!ConfigManager.CONFIG.optimize_bells) return; ci.cancel();
-
-            BlockEntityExt ext = (BlockEntityExt) blockEntity;
-            if (!ext.getRemoveChunkVariant()) {
-                BakedModelManager manager = MinecraftClient.getInstance().getBakedModelManager();
-                BlockStateModel bell_body = manager.getModel(ModelLoader.BELL_BODY_KEY);
-                ((FabricBlockStateModel)bell_body).emitQuads(emitter, acc.getLevel(), pos, state, acc.getRandom(), acc::isFaceCulledInvoke);
-            }
-            ((FabricBlockStateModel)model).emitQuads(emitter, acc.getLevel(), pos, state, acc.getRandom(), acc::isFaceCulledInvoke);
-        }
-
-        else if (block instanceof DecoratedPotBlock) {
-            if (!ConfigManager.CONFIG.optimize_decoratedpots) {
-                ci.cancel(); return;
-            }
-
-            BlockEntityExt ext = (BlockEntityExt) blockEntity;
-            if (ext.getRemoveChunkVariant())
+            if (!ConfigManager.CONFIG.optimize_signs)
                 ci.cancel();
         }
 
-        else if (block instanceof BedBlock) {
-            //if (!ConfigManager.CONFIG.optimize_beds)
-                //ci.cancel();
+        /* SHULKERS, and CHESTS */
+        else if (block instanceof ChestBlock || block instanceof EnderChestBlock || block instanceof ShulkerBoxBlock) {
+            boolean isShulker = block instanceof ShulkerBoxBlock;
+
+            if ((isShulker && !ConfigManager.CONFIG.optimize_shulkers) ||
+                    (!isShulker && !ConfigManager.CONFIG.optimize_chests))
+                return;
+
+            ci.cancel();
+
+            List<BlockModelPart> parts = model.getParts(acc.getRandom());
+
+            int quadThreshold = isShulker ? 10 : 6;
+            Map<Boolean, List<BlockModelPart>> partitioned = parts.stream()
+                    .collect(Collectors.partitioningBy(p -> p.getQuads(null).size() > quadThreshold));
+
+            List<BlockModelPart> lidParts = partitioned.get(true);
+            List<BlockModelPart> trunkParts = partitioned.get(false);
+
+            if (shouldRender)
+                BlockRenderHelper.emitQuads(lidParts, emitter, acc::isFaceCulledInvoke);
+            BlockRenderHelper.emitQuads(trunkParts, emitter, acc::isFaceCulledInvoke);
+        }
+
+        /* BELLS */
+        else if (block instanceof BellBlock) {
+            if (!ConfigManager.CONFIG.optimize_bells) return;
+
+            ci.cancel();
+
+            if (shouldRender) {
+                BakedModelManager manager = MinecraftClient.getInstance().getBakedModelManager();
+                BlockStateModel bell_body = manager.getModel(ModelLoader.BELL_BODY_KEY);
+
+                ((FabricBlockStateModel) bell_body).emitQuads(
+                        emitter, acc.getLevel(), pos, state, acc.getRandom(), acc::isFaceCulledInvoke);
+            }
+            ((FabricBlockStateModel) model).emitQuads(
+                    emitter, acc.getLevel(), pos, state, acc.getRandom(), acc::isFaceCulledInvoke);
+        }
+
+        /* DECORATED POTS */
+        else if (block instanceof DecoratedPotBlock) {
+            if (!ConfigManager.CONFIG.optimize_decoratedpots) {
+                ci.cancel();
+                return;
+            }
+            if (!shouldRender)
+                ci.cancel();
         }
         restoreContext();
     }
 
-    /* setup the "mesh" context, straight copy/paste from the original renderModel function */
+    @Unique
+    private boolean shouldRender(BlockEntityExt ext) {
+        return ext == null || !ext.getRemoveChunkVariant();
+    }
+
     @Unique
     AbstractBlockRenderContextAccessor setupContext(BlockState state, BlockPos pos, BlockPos origin) {
         AbstractBlockRenderContextAccessor acc = (AbstractBlockRenderContextAccessor)(Object)this;
@@ -175,7 +150,7 @@ public class BlockRendererMixin {
         acc.setPos(pos);
         acc.prepareAoInfoInvoke(true);
 
-        this.posOffset.set((float) origin.getX(), (float) origin.getY(), (float) origin.getZ());
+        this.posOffset.set(origin.getX(), origin.getY(), origin.getZ());
         if (state.hasModelOffset()) {
             Vec3d offset = state.getModelOffset(pos);
             this.posOffset.add((float) offset.x, (float) offset.y, (float) offset.z);
@@ -191,7 +166,8 @@ public class BlockRendererMixin {
 
     @Unique
     void restoreContext() {
-        AbstractBlockRenderContextAccessor acc = (AbstractBlockRenderContextAccessor)(Object)this;
+        AbstractBlockRenderContextAccessor acc =
+                (AbstractBlockRenderContextAccessor)(Object)this;
         acc.setDefaultRenderType(null);
     }
 }
