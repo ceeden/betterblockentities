@@ -5,6 +5,7 @@ import net.minecraft.block.entity.*;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.option.GameOptionsScreen;
+import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.option.SimpleOption;
 import net.minecraft.text.Text;
@@ -71,7 +72,7 @@ public class ConfigScreen extends GameOptionsScreen {
     private SimpleOption<Boolean> masterToggle() {
         return new SimpleOption<>(
                 "Enable Optimizations",
-                SimpleOption.emptyTooltip(),
+                value -> Tooltip.of(Text.of("§7Turns the entire optimization system on or off.")),
                 (text, value) -> value ? Text.of("§aON") : Text.of("§cOFF"),
                 SimpleOption.BOOLEAN,
                 ConfigManager.CONFIG.master_optimize,
@@ -85,7 +86,7 @@ public class ConfigScreen extends GameOptionsScreen {
     private SimpleOption<Boolean> optimizeChests() {
         return new SimpleOption<>(
                 "Optimize Chests",
-                SimpleOption.emptyTooltip(),
+                value -> Tooltip.of(Text.of("§7Turns off all Chest optimizations, overrides the option: §l§nChest Animations§r")),
                 (text, value) -> value ? Text.of("§aON") : Text.of("§cOFF"),
                 SimpleOption.BOOLEAN,
                 ConfigManager.CONFIG.optimize_chests,
@@ -107,7 +108,7 @@ public class ConfigScreen extends GameOptionsScreen {
     private SimpleOption<Boolean> optimizeSigns() {
         return new SimpleOption<>(
                 "Optimize Signs",
-                SimpleOption.emptyTooltip(),
+                value -> Tooltip.of(Text.of("§7Turns off all Sign optimizations, overrides the option: §l§nSign Text§r")),
                 (text, value) -> value ? Text.of("§aON") : Text.of("§cOFF"),
                 SimpleOption.BOOLEAN,
                 ConfigManager.CONFIG.optimize_signs,
@@ -129,7 +130,7 @@ public class ConfigScreen extends GameOptionsScreen {
     private SimpleOption<Boolean> optimizeShulkers() {
         return new SimpleOption<>(
                 "Optimize Shulkers",
-                SimpleOption.emptyTooltip(),
+                value -> Tooltip.of(Text.of("§7Turns off all ShulkerBox optimizations, overrides the option: §l§nShulker Animations§r")),
                 (text, value) -> value ? Text.of("§aON") : Text.of("§cOFF"),
                 SimpleOption.BOOLEAN,
                 ConfigManager.CONFIG.optimize_shulkers,
@@ -149,17 +150,23 @@ public class ConfigScreen extends GameOptionsScreen {
     }
 
     private SimpleOption<Boolean> optimizeBeds() {
-        return booleanOption(
+        return new SimpleOption<>(
                 "Optimize Beds",
+                value -> Tooltip.of(Text.of("§7Turns off all Bed optimizations")),
+                (text, value) -> value ? Text.of("§aON") : Text.of("§cOFF"),
+                SimpleOption.BOOLEAN,
                 ConfigManager.CONFIG.optimize_beds,
-                v -> ConfigManager.CONFIG.optimize_beds = v
+                v -> {
+                    ConfigManager.CONFIG.optimize_beds = v;
+                    setOptionActive(masterToggle, v && masterToggle.getValue());
+                }
         );
     }
 
     private SimpleOption<Boolean> optimizeBells() {
         return new SimpleOption<>(
                 "Optimize Bells",
-                SimpleOption.emptyTooltip(),
+                value -> Tooltip.of(Text.of("§7Turns off all Bell optimizations, overrides the option: §l§nBell Animations§r")),
                 (text, value) -> value ? Text.of("§aON") : Text.of("§cOFF"),
                 SimpleOption.BOOLEAN,
                 ConfigManager.CONFIG.optimize_bells,
@@ -181,7 +188,7 @@ public class ConfigScreen extends GameOptionsScreen {
     private SimpleOption<Boolean> optimizeDecoratedPots() {
         return new SimpleOption<>(
                 "Optimize Decorated Pots",
-                SimpleOption.emptyTooltip(),
+                value -> Tooltip.of(Text.of("§7Turns off all Decorated Pot optimizations, overrides the option: §l§nDecorated Pot Animations§r")),
                 (text, value) -> value ? Text.of("§aON") : Text.of("§cOFF"),
                 SimpleOption.BOOLEAN,
                 ConfigManager.CONFIG.optimize_decoratedpots,
@@ -203,7 +210,7 @@ public class ConfigScreen extends GameOptionsScreen {
     private SimpleOption<Integer> extraRenderPasses() {
         return new SimpleOption<>(
                 "Extra Render Passes",
-                SimpleOption.emptyTooltip(),
+                value -> Tooltip.of(Text.of("§7The amount of extra render passes each optimized block entity should be rendered for after it stops animating, can help smooth out visual bugs")),
                 (text, value) -> Text.of(text.getString() + ": " + value),
                 new SimpleOption.ValidatingIntSliderCallbacks(0, 50),
                 ConfigManager.CONFIG.smoothness_slider,
