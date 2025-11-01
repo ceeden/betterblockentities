@@ -6,6 +6,8 @@ import betterblockentities.gui.ConfigManager;
 /* fabric */
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
 import net.fabricmc.api.ClientModInitializer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /*
     TODO: Add support for vanilla fabric (so the mod can run without
@@ -18,6 +20,8 @@ import net.fabricmc.api.ClientModInitializer;
 */
 
 public class BetterBlockEntities implements ClientModInitializer {
+    private static final Logger LOGGER = LoggerFactory.getLogger("BBE-Logger");
+
     @Override
     public void onInitializeClient() {
         /* register our model loader */
@@ -28,5 +32,9 @@ public class BetterBlockEntities implements ClientModInitializer {
 
         /* updates the list of supported block entity types and cached config in BlockEntityManager */
         ConfigManager.refreshSupportedTypes();
+    }
+
+    public static Logger getLogger() {
+        return LOGGER;
     }
  }
