@@ -10,6 +10,7 @@ On top of that, we also optimize more than only chests, like:
 - Signs
 - Decorated Pots
 - Beds
+- Bells
 - Chests (ender, trapped, and all the new copper variants)
 
 **We are planning on adding even more block entities to that list in the future!**
@@ -42,7 +43,7 @@ A- Minecraft versions from 1.21.6 and above
 A- No backports are planned
 
 **Q- I don't see my sherds/pottery pattern on my Decorated Pot**                                                        
-A- We have yet to implement this into the mod, but support for this will come in a future update! If you want your pottery paterns to work, disable the decorated pot in the config screen.
+A- We have yet to implement this into the mod, but support for this will come in a future update! If you want your pottery patterns to work, disable the decorated pot in the config screen.
 
 **Q- My chests (or any other block entity) is invisible/glitched, what do I do?**                   
 A- You are most likely using a resource pack that conflicts with BBE, either disable the block entity optimizations through the config screen or turn off the resource pack.
@@ -58,3 +59,6 @@ A- Yes, a NeoForge variant is planned.
 
 **Q- Is BBE compatible with resource packs and shaders?**                                           
 A- Yes! You can load most resource packs and shaders with BBE no problem. Check the "Mod Compatibility" section above for some more info on resource packs and EMF/ETF.
+
+
+
