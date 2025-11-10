@@ -11,10 +11,11 @@ import net.minecraft.world.World;
 */
 
 public class ChunkUpdateDispatcher {
-    public static void queueRebuildAtBlockPos(World world, BlockPos pos) {
+    public static void queueRebuildAtBlockPos(World world, long pos) {
         try {
-            var state = world.getBlockState(pos);
-            MinecraftClient.getInstance().worldRenderer.updateBlock(world, pos, state, state, 8);
+            BlockPos posObj = BlockPos.fromLong(pos);
+            var state = world.getBlockState(posObj);
+            MinecraftClient.getInstance().worldRenderer.updateBlock(world, posObj, state, state, 8);
         } catch (Exception e) {
             BetterBlockEntities.getLogger().error("Error: Failed to update render section at {}", pos, e);
         }
