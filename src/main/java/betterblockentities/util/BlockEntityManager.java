@@ -1,10 +1,11 @@
 package betterblockentities.util;
 
 /* local */
+import betterblockentities.BetterBlockEntities;
 import betterblockentities.chunk.ChunkUpdateDispatcher;
+import betterblockentities.gui.ConfigManager;
 
 /* minecraft */
-import betterblockentities.gui.ConfigManager;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.*;
 import net.minecraft.client.MinecraftClient;
@@ -89,7 +90,7 @@ public class BlockEntityManager {
     }
 
     private static boolean handleAnimating(BlockEntity blockEntity, BlockEntityExt inst) {
-        var pos = blockEntity.getPos();
+        var pos = blockEntity.getPos().asLong();
 
         /* ignore signs as we render the text with its BER  */
         if (!(blockEntity instanceof SignBlockEntity)) {
@@ -103,22 +104,47 @@ public class BlockEntityManager {
     }
 
     private static boolean handleStatic(BlockEntity blockEntity, BlockEntityExt inst) {
-        var pos = blockEntity.getPos();
+        var pos = blockEntity.getPos().asLong();
 
-        /* remove from anim map if entry exists  */
-        if (BlockEntityTracker.animMap.remove(pos)) {
-            inst.setRemoveChunkVariant(false);
-            ChunkUpdateDispatcher.queueRebuildAtBlockPos(blockEntity.getWorld(), pos);
-            BlockEntityTracker.extraRenderPasses.put(pos, smoothness);
+        if (ConfigManager.CONFIG.updateType == 0)
+        {
+            if (!BlockEntityTracker.animMap.contains(pos))
+                return false;
+
+            /* captured frustum */
+            var frustum = BetterBlockEntities.curFrustum;
+
+            /* check sanity (visible or not) */
+            if (BlockVisibilityChecker.isBlockInFOVAndVisible(frustum, blockEntity))
+                return true;
+            else {
+                if (BlockEntityTracker.animMap.remove(pos)) {
+                    inst.setRemoveChunkVariant(false);
+                    ChunkUpdateDispatcher.queueRebuildAtBlockPos(blockEntity.getWorld(), pos);
+                }
+                Integer passes = BlockEntityTracker.extraRenderPasses.compute(pos, (p, v) -> {
+                    if (v == null) return null;
+                    if (v > 1) return v - 1;
+                    inst.setJustReceivedUpdate(false);
+                    return null;
+                });
+                return passes != null;
+            }
         }
+        else {
+            if (BlockEntityTracker.animMap.remove(pos)) {
+                inst.setRemoveChunkVariant(false);
+                ChunkUpdateDispatcher.queueRebuildAtBlockPos(blockEntity.getWorld(), pos);
+                BlockEntityTracker.extraRenderPasses.put(pos, smoothness);
+            }
 
-        /* keep rendering for x amount of passes after BE stopped animating  */
-        Integer passes = BlockEntityTracker.extraRenderPasses.compute(pos, (p, v) -> {
-            if (v == null) return null;
-            if (v > 1) return v - 1;
-            inst.setJustReceivedUpdate(false);
-            return null;
-        });
-        return passes != null;
+            Integer passes = BlockEntityTracker.extraRenderPasses.compute(pos, (p, v) -> {
+                if (v == null) return null;
+                if (v > 1) return v - 1;
+                inst.setJustReceivedUpdate(false);
+                return null;
+            });
+            return passes != null;
+        }
     }
 }

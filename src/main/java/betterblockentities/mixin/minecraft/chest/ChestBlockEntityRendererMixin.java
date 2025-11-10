@@ -1,16 +1,21 @@
-package betterblockentities.mixin;
+package betterblockentities.mixin.minecraft.chest;
 
 /* local */
+import betterblockentities.ModelLoader;
 import betterblockentities.gui.ConfigManager;
 import betterblockentities.model.BBEChestBlockModel;
 
 /* minecraft */
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.OverlayTexture;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.render.block.entity.ChestBlockEntityRenderer;
 import net.minecraft.client.render.block.entity.model.ChestBlockModel;
 import net.minecraft.client.render.block.entity.state.ChestBlockEntityRenderState;
 import net.minecraft.client.render.command.OrderedRenderCommandQueue;
 import net.minecraft.client.render.entity.model.EntityModelLayers;
+import net.minecraft.client.render.model.BlockStateModel;
 import net.minecraft.client.render.state.CameraRenderState;
 import net.minecraft.client.util.math.MatrixStack;
 

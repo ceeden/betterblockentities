@@ -30,7 +30,9 @@ public class ConfigScreen extends GameOptionsScreen {
             shulkerAnimOpt,
             bellAnimOpt,
             potAnimOpt;
-    private SimpleOption<Integer> smoothness;
+    private SimpleOption<Integer>
+            updateType,
+            smoothness;
     private SimpleOption<Integer> signDistance;
 
     public ConfigScreen(Screen parent) {
@@ -49,6 +51,7 @@ public class ConfigScreen extends GameOptionsScreen {
         bedOpt = optimizeBeds();
         bellOpt = optimizeBells();
         potOpt = optimizeDecoratedPots();
+        updateType = updateType();
         smoothness = extraRenderPasses();
         signDistance = signTextRenderDistance();
 
@@ -67,6 +70,7 @@ public class ConfigScreen extends GameOptionsScreen {
                 potOpt, potAnimOpt,
                 bedOpt
         );
+        this.body.addSingleOptionEntry(updateType);
         this.body.addSingleOptionEntry(smoothness);
         this.body.addSingleOptionEntry(signDistance);
         updateDependentOptions(masterToggle.getValue());
@@ -213,11 +217,26 @@ public class ConfigScreen extends GameOptionsScreen {
     private SimpleOption<Integer> signTextRenderDistance() {
         return new SimpleOption<>(
                 "Sign Text Render Distance",
-                value -> Tooltip.of(Text.of("§7The amount of blocks the sign text will be stop rendering at")),
+                value -> Tooltip.of(Text.of("§7The amount of blocks the sign text will stop rendering at")),
                 (text, value) -> Text.of(text.getString() + ": " + value),
-                new SimpleOption.ValidatingIntSliderCallbacks(0, 256),
+                new SimpleOption.ValidatingIntSliderCallbacks(0, 64),
                 ConfigManager.CONFIG.sign_text_render_distance,
                 v -> ConfigManager.CONFIG.sign_text_render_distance = v
+        );
+    }
+
+    private SimpleOption<Integer> updateType() {
+        return new SimpleOption<>(
+                "Update Type",
+                value -> Tooltip.of(Text.of("§7Type of update scheduler being used. §l§nSmart§r §7updates only when the BE is not in line of sight or out of FOV. §l§nFast§r §7updates immediately")),
+                (text, value) -> switch (value) {
+                    case 0 -> Text.of("Smart");
+                    case 1 -> Text.of("Fast");
+                    default -> Text.of("Fast");
+                },
+                new SimpleOption.MaxSuppliableIntCallbacks(0, () -> 1, 1),
+                ConfigManager.CONFIG.updateType,
+                value -> ConfigManager.CONFIG.updateType = value
         );
     }
 
@@ -258,6 +277,7 @@ public class ConfigScreen extends GameOptionsScreen {
         setOptionActive(potAnimOpt, enabled && potOpt.getValue());
 
         setOptionActive(smoothness, enabled);
+        setOptionActive(updateType, enabled);
         setOptionActive(signDistance, enabled);
     }
 
