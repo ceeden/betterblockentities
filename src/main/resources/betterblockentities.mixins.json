@@ -3,26 +3,37 @@
   "package": "betterblockentities.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "AbstractBlockMixin",
-    "AbstractSignBlockEntityRendererMixin",
-    "BellBlockEntityMixin",
-    "BlockEntityMixin",
-    "ChestBlockEntityMixin",
-    "ChestBlockEntityRendererMixin",
-    "DecoratedPotBlockEntityMixin",
-    "EnderChestBlockEntityMixin",
-    "RenderLayersMixin",
-    "ResourcePackManagerMixin",
-    "ShulkerBoxBlockEntityMixin",
+    "minecraft.bell.BellBlockEntityMixin",
+
+    "minecraft.chest.ChestBlockEntityAccessor",
+    "minecraft.chest.ChestBlockEntityMixin",
+    "minecraft.chest.ChestBlockEntityRendererMixin",
+    "minecraft.chest.ChestLidAnimatorAccessor",
+    "minecraft.chest.EnderChestBlockEntityMixin",
+
+    "minecraft.decordatedpot.DecoratedPotBlockEntityMixin",
+
+    "minecraft.shulker.ShulkerBoxBlockEntityMixin",
+
+    "minecraft.sign.AbstractSignBlockEntityRendererMixin",
+
     "sodium.AbstractBlockRenderContextAccessor",
     "sodium.BlockRendererMixin",
-    "sodium.SodiumWorldRendererMixin"
+    "sodium.SodiumWorldRendererMixin",
+
+    "minecraft.AbstractBlockMixin",
+    "minecraft.BlockEntityMixin",
+    "minecraft.ClientWorldMixin",
+    "minecraft.OrderedRenderCommandQueueImplMixin",
+    "minecraft.RenderLayersMixin",
+    "minecraft.ResourcePackManagerMixin",
+    "minecraft.WorldRendererMixin"
   ],
   "server": [],
   "injectors": {
     "defaultRequire": 1
   },
   "client": [
-    "BlockRenderManagerMixin"
+
   ]
 }

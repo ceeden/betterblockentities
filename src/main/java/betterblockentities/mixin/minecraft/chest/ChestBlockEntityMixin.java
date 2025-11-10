@@ -1,14 +1,14 @@
-package betterblockentities.mixin;
+package betterblockentities.mixin.minecraft.chest;
 
 /* local */
 import betterblockentities.util.BlockEntityExt;
 
 /* minecraft */
 import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.*;
+import net.minecraft.block.entity.ChestBlockEntity;
+import net.minecraft.util.math.BlockPos;
 
 /* mixin */
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -16,11 +16,11 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(ShulkerBoxBlockEntity.class)
-public abstract class ShulkerBoxBlockEntityMixin {
+@Mixin(ChestBlockEntity.class)
+public abstract class ChestBlockEntityMixin {
     /* only run tick logic when we receive a block event */
-    @Inject(method = "tick", at = @At("HEAD"), cancellable = true)
-    private static void onTick(World world, BlockPos pos, BlockState state, ShulkerBoxBlockEntity blockEntity, CallbackInfo ci) {
+    @Inject(method = "clientTick", at = @At("HEAD"), cancellable = true)
+    private static void onTick(World world, BlockPos pos, BlockState state, ChestBlockEntity blockEntity, CallbackInfo ci) {
         if (!(((BlockEntityExt)blockEntity).getJustReceivedUpdate()))
             ci.cancel();
     }

@@ -1,4 +1,4 @@
-package betterblockentities.mixin;
+package betterblockentities.mixin.minecraft.decordatedpot;
 
 /* local */
 import betterblockentities.util.BlockEntityExt;
