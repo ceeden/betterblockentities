@@ -1,4 +1,4 @@
-package betterblockentities.mixin;
+package betterblockentities.mixin.minecraft;
 
 /* minecraft */
 import betterblockentities.gui.ConfigManager;
