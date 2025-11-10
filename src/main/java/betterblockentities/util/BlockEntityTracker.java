@@ -1,13 +1,12 @@
 package betterblockentities.util;
 
-/* minecraft */
-import net.minecraft.util.math.BlockPos;
-
 /* java/misc */
-import java.util.*;
+import it.unimi.dsi.fastutil.longs.Long2IntMap;
+import it.unimi.dsi.fastutil.longs.Long2IntOpenHashMap;
+import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
+import it.unimi.dsi.fastutil.longs.LongSet;
 
-public class BlockEntityTracker
-{
-    public static HashSet<BlockPos> animMap = new HashSet<>();
-    public static HashMap<BlockPos, Integer> extraRenderPasses = new HashMap<>();
+public class BlockEntityTracker {
+    public static final LongSet animMap = new LongOpenHashSet();
+    public static final Long2IntMap extraRenderPasses = new Long2IntOpenHashMap();
 }
