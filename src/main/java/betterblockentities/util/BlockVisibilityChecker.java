@@ -47,7 +47,7 @@ public class BlockVisibilityChecker {
                     blockPos.getZ() + offset.z
             );
 
-            HitResult hit = player.getEntityWorld().raycast(new RaycastContext(
+            HitResult hit = player.getWorld().raycast(new RaycastContext(
                     eyePos,
                     target,
                     RaycastContext.ShapeType.VISUAL,

@@ -24,7 +24,6 @@
     "minecraft.AbstractBlockMixin",
     "minecraft.BlockEntityMixin",
     "minecraft.ClientWorldMixin",
-    "minecraft.OrderedRenderCommandQueueImplMixin",
     "minecraft.RenderLayersMixin",
     "minecraft.ResourcePackManagerMixin",
     "minecraft.WorldRendererMixin"
