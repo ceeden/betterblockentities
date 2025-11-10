@@ -100,10 +100,17 @@ public class BlockRendererMixin {
                 List<BlockModelPart> lidParts   = partitioned.get(true);
                 List<BlockModelPart> trunkParts = partitioned.get(false);
 
-                List<BlockModelPart> merged = new ArrayList<>(trunkParts);
+                List<BlockModelPart> merged =  new ArrayList<>();
 
                 BlockEntityExt ext = getBlockEntityInstance(pos);
                 boolean shouldRender = shouldRender(ext);
+
+                if (ConfigManager.CONFIG.updateType == 1)
+                    merged.addAll(trunkParts);
+                else {
+                    if (shouldRender)
+                        merged.addAll(trunkParts);
+                }
 
                 /* merge BlockModelParts after splicing */
                 if (shouldRender) merged.addAll(lidParts);

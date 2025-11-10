@@ -18,6 +18,7 @@ public class ConfigHolder
     public boolean pot_animations = true;
 
     public int sign_text_render_distance = 16;
+    public int updateType = 0;
     public int smoothness_slider = 25;
 
     public ConfigHolder copy() {
@@ -34,6 +35,8 @@ public class ConfigHolder
         copy.shulker_animations = shulker_animations;
         copy.bell_animations = bell_animations;
         copy.pot_animations = pot_animations;
+        copy.sign_text_render_distance = sign_text_render_distance;
+        copy.updateType = updateType;
         copy.smoothness_slider = smoothness_slider;
         return copy;
     }
@@ -54,6 +57,8 @@ public class ConfigHolder
                 && shulker_animations == other.shulker_animations
                 && bell_animations == other.bell_animations
                 && pot_animations == other.pot_animations
+                && sign_text_render_distance == other.sign_text_render_distance
+                && updateType == other.updateType
                 && smoothness_slider == other.smoothness_slider;
     }
 }
