@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(WorldRenderer.class)
 public class WorldRendererMixin {
-    @Inject(at = @At("HEAD"), method = "setupTerrain", remap = false)
+    @Inject(at = @At("HEAD"), method = "setupTerrain")
     private void captureFrustum(Camera camera, Frustum frustum, boolean hasForcedFrustum, boolean spectator, CallbackInfo ci) {
         BetterBlockEntities.curFrustum = frustum;
     }
