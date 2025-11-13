@@ -66,8 +66,9 @@ public class ClientWorldMixin {
             accDst.setOpen(accSrc.getOpen());
             accDst.setProgress(accSrc.getProgress());
             accDst.setLastProgress(accSrc.getLastProgress());
+
+            inst.setJustReceivedUpdate(true);
         }
-        inst.setJustReceivedUpdate(true);
     }
 
     @Unique
