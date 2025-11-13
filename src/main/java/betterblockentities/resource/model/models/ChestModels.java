@@ -6,6 +6,7 @@ import betterblockentities.resource.model.ModelGenerator;
 /* gson */
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import net.minecraft.util.DyeColor;
 
 /* java/misc */
 import java.nio.charset.StandardCharsets;
@@ -23,8 +24,24 @@ public class ChestModels extends ModelGenerator {
             "chest", "trapped_chest", "ender_chest"
     );
 
-
     public static class Model {
+        /* this is super ugly ik */
+        private static String getParticleTexture(String textureName) {
+            if (textureName.contains("ender")) {
+                return "minecraft:block/obsidian";
+            } else if (textureName.contains("exposed")) {
+                return "minecraft:block/exposed_copper";
+            } else if (textureName.contains("oxidized")) {
+                return "minecraft:block/oxidized_copper";
+            } else if (textureName.contains("weathered")) {
+                return "minecraft:block/weathered_copper";
+            } else if (textureName.contains("copper")) {
+                return "minecraft:block/copper_block";
+            } else {
+                return "minecraft:block/oak_planks";
+            }
+        }
+
         public static void generateLeftChests(Map<String, byte[]> map) {
             generateChestSide(map, "left_chest_template.json", "_left", Map.of(
                     "chest_left_lid", "normal_left",
@@ -72,7 +89,7 @@ public class ChestModels extends ModelGenerator {
                 String model = entry.getKey();
                 String texture = "minecraft:entity/chest/" + entry.getValue();
                 map.put("assets/minecraft/models/block/" + model + ".json",
-                        GSON.toJson(makeModel("chest", texture, elements)).getBytes(StandardCharsets.UTF_8));
+                        GSON.toJson(makeModelWithParticle("chest", texture, getParticleTexture(texture), elements)).getBytes(StandardCharsets.UTF_8));
             }
         }
     }

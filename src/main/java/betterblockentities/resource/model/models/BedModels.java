@@ -32,7 +32,7 @@ public class BedModels extends ModelGenerator {
                 String name = color.getId() + "_bed_head";
                 String texture = "minecraft:entity/bed/" + color.getId();
                 map.put("assets/minecraft/models/block/" + name + ".json",
-                        GSON.toJson(makeModel("bed", texture, elements)).getBytes(StandardCharsets.UTF_8));
+                        GSON.toJson(makeModelWithParticle("bed", texture, "minecraft:block/oak_planks", elements)).getBytes(StandardCharsets.UTF_8));
             }
         }
 
@@ -45,7 +45,7 @@ public class BedModels extends ModelGenerator {
                 String name = color.getId() + "_bed_foot";
                 String texture = "minecraft:entity/bed/" + color.getId();
                 map.put("assets/minecraft/models/block/" + name + ".json",
-                        GSON.toJson(makeModel("bed", texture, elements)).getBytes(StandardCharsets.UTF_8));
+                        GSON.toJson(makeModelWithParticle("bed", texture,"minecraft:block/oak_planks", elements)).getBytes(StandardCharsets.UTF_8));
             }
         }
     }

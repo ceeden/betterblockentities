@@ -5,6 +5,7 @@ import betterblockentities.resource.model.ModelGenerator;
 
 /* gson */
 import com.google.gson.JsonObject;
+import net.minecraft.util.DyeColor;
 
 /* java/misc */
 import java.nio.charset.StandardCharsets;
@@ -19,6 +20,10 @@ public class SignModels extends ModelGenerator {
     );
 
     public static class Model {
+        private static String getParticleTexture(String woodtype) {
+            return "minecraft:block/" + woodtype + "_planks";
+        }
+
         public static void generateSignModels(Map<String, byte[]> map) {
             generateSigns(map, "sign_template.json", false, true);            // Standing signs
             generateSigns(map, "sign_wall_template.json", false, false);      // Wall signs
@@ -44,7 +49,7 @@ public class SignModels extends ModelGenerator {
                     modelName = wood + "_sign";
                 }
                 map.put("assets/minecraft/models/block/" + modelName + ".json",
-                        GSON.toJson(makeModel("sign", texture, elements)).getBytes(StandardCharsets.UTF_8));
+                        GSON.toJson(makeModelWithParticle("sign", texture, getParticleTexture(wood), elements)).getBytes(StandardCharsets.UTF_8));
             }
         }
 
@@ -58,7 +63,7 @@ public class SignModels extends ModelGenerator {
                 String modelName = wood + "_hanging_sign_attached";
 
                 map.put("assets/minecraft/models/block/" + modelName + ".json",
-                        GSON.toJson(makeModel("sign", texture, elements)).getBytes(StandardCharsets.UTF_8));
+                        GSON.toJson(makeModelWithParticle("sign", texture, getParticleTexture(wood), elements)).getBytes(StandardCharsets.UTF_8));
             }
         }
     }
@@ -103,7 +108,7 @@ public class SignModels extends ModelGenerator {
                 String[] facings = {"north", "east", "south", "west"};
                 int[] rotations = {0, 90, 180, 270};
                 for (int i = 0; i < facings.length; i++) {
-                    variants.add("facing=" + facings[i], createVariantFloat(baseName, 0, rotations[i]));
+                    variants.add("facing=" + facings[i], createVariant(baseName, 0, rotations[i]));
                 }
             } else {
                 for (int rot = 0; rot < 16; rot++) {

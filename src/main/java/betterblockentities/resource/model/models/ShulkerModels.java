@@ -22,6 +22,10 @@ import java.util.Map;
 */
 public class ShulkerModels extends ModelGenerator {
     public static class Model {
+        private static String getParticleTexture(DyeColor color) {
+            return "minecraft:block/" + color.getId() + "_shulker_box";
+        }
+
         public static void generateShulkerBase(Map<String, byte[]> map) {
             JsonObject template = loader.loadTemplate("shulker_base_template.json");
             if (template == null) return;
@@ -31,13 +35,13 @@ public class ShulkerModels extends ModelGenerator {
                 String name = color.getId() + "_shulker_box_base";
                 String texture = "minecraft:entity/shulker/shulker_" + color.getId();
                 map.put("assets/minecraft/models/block/" + name + ".json",
-                        GSON.toJson(makeModel("shulker", texture, elements)).getBytes(StandardCharsets.UTF_8));
+                        GSON.toJson(makeModelWithParticle("shulker", texture, getParticleTexture(color), elements)).getBytes(StandardCharsets.UTF_8));
             }
 
             String baseName = "shulker_box_base";
             String baseTexture = "minecraft:entity/shulker/shulker";
             map.put("assets/minecraft/models/block/" + baseName + ".json",
-                    GSON.toJson(makeModel("shulker", baseTexture, elements)).getBytes(StandardCharsets.UTF_8));
+                    GSON.toJson(makeModelWithParticle("shulker", baseTexture, "minecraft:block/shulker_box", elements)).getBytes(StandardCharsets.UTF_8));
         }
 
         public static void generateShulkerLid(Map<String, byte[]> map) {
@@ -49,13 +53,13 @@ public class ShulkerModels extends ModelGenerator {
                 String name = color.getId() + "_shulker_box_lid";
                 String texture = "minecraft:entity/shulker/shulker_" + color.getId();
                 map.put("assets/minecraft/models/block/" + name + ".json",
-                        GSON.toJson(makeModel("shulker", texture, elements)).getBytes(StandardCharsets.UTF_8));
+                        GSON.toJson(makeModelWithParticle("shulker", texture, getParticleTexture(color), elements)).getBytes(StandardCharsets.UTF_8));
             }
 
             String baseName = "shulker_box_lid";
             String baseTexture = "minecraft:entity/shulker/shulker";
             map.put("assets/minecraft/models/block/" + baseName + ".json",
-                    GSON.toJson(makeModel("shulker", baseTexture, elements)).getBytes(StandardCharsets.UTF_8));
+                    GSON.toJson(makeModelWithParticle("shulker", baseTexture, "minecraft:block/shulker_box", elements)).getBytes(StandardCharsets.UTF_8));
         }
     }
 
