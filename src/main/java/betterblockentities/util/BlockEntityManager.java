@@ -106,10 +106,8 @@ public class BlockEntityManager {
     private static boolean handleStatic(BlockEntity blockEntity, BlockEntityExt inst) {
         var pos = blockEntity.getPos().asLong();
 
-        if (ConfigManager.CONFIG.updateType == 0)
-        {
-            if (!BlockEntityTracker.animMap.contains(pos))
-                return false;
+        if (ConfigManager.CONFIG.updateType == 0) {
+            if (!BlockEntityTracker.animMap.contains(pos)) return false;
 
             /* captured frustum */
             var frustum = BetterBlockEntities.curFrustum;
@@ -117,34 +115,20 @@ public class BlockEntityManager {
             /* check sanity (visible or not) */
             if (BlockVisibilityChecker.isBlockInFOVAndVisible(frustum, blockEntity))
                 return true;
-            else {
-                if (BlockEntityTracker.animMap.remove(pos)) {
-                    inst.setRemoveChunkVariant(false);
-                    ChunkUpdateDispatcher.queueRebuildAtBlockPos(blockEntity.getWorld(), pos);
-                }
-                Integer passes = BlockEntityTracker.extraRenderPasses.compute(pos, (p, v) -> {
-                    if (v == null) return null;
-                    if (v > 1) return v - 1;
-                    inst.setJustReceivedUpdate(false);
-                    return null;
-                });
-                return passes != null;
-            }
         }
-        else {
-            if (BlockEntityTracker.animMap.remove(pos)) {
-                inst.setRemoveChunkVariant(false);
-                ChunkUpdateDispatcher.queueRebuildAtBlockPos(blockEntity.getWorld(), pos);
-                BlockEntityTracker.extraRenderPasses.put(pos, smoothness);
-            }
 
-            Integer passes = BlockEntityTracker.extraRenderPasses.compute(pos, (p, v) -> {
-                if (v == null) return null;
-                if (v > 1) return v - 1;
-                inst.setJustReceivedUpdate(false);
-                return null;
-            });
-            return passes != null;
+        if (BlockEntityTracker.animMap.remove(pos)) {
+            inst.setRemoveChunkVariant(false);
+            ChunkUpdateDispatcher.queueRebuildAtBlockPos(blockEntity.getWorld(), pos);
+            BlockEntityTracker.extraRenderPasses.put(pos, smoothness);
         }
+
+        int passes = BlockEntityTracker.extraRenderPasses.compute(pos, (p, v) -> {
+            if (v == null) return null;
+            if (v > 1) return v - 1;
+            inst.setJustReceivedUpdate(false);
+            return null;
+        });
+        return passes != 0;
     }
 }
