@@ -1,6 +1,7 @@
 package betterblockentities.mixin.minecraft;
 
 /* local */
+import betterblockentities.chunk.ChunkUpdateDispatcher;
 import betterblockentities.gui.ConfigManager;
 import betterblockentities.mixin.minecraft.chest.ChestBlockEntityAccessor;
 import betterblockentities.mixin.minecraft.chest.ChestLidAnimatorAccessor;
@@ -9,6 +10,7 @@ import betterblockentities.util.BlockEntityManager;
 import betterblockentities.util.BlockEntityTracker;
 
 /* fabric */
+import betterblockentities.util.BlockVisibilityChecker;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
@@ -37,37 +39,45 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class ClientWorldMixin {
     @Inject(method = "handleBlockUpdate", at = @At("TAIL"), cancellable = true)
     public void handleBlockUpdate(BlockPos pos, BlockState state, int flags, CallbackInfo ci) {
-        if (!ConfigManager.CONFIG.master_optimize)
-            return;
+        if (!ConfigManager.CONFIG.master_optimize) return;
 
-        ClientWorld world = (ClientWorld)(Object)this;
-
+        ClientWorld world = (ClientWorld) (Object) this;
         if (!world.isClient()) return;
 
         BlockEntity blockEntity = world.getBlockEntity(pos);
-        if (blockEntity == null) return;
-
-        if (!BlockEntityManager.isSupportedEntity(blockEntity)) return;
+        if (blockEntity == null || !BlockEntityManager.isSupportedEntity(blockEntity)) return;
 
         BlockEntityExt inst = (BlockEntityExt) blockEntity;
-        if (inst == null) return;
 
         /* get other chest half */
         BlockEntity alt = getOtherChestHalf(blockEntity.getWorld(), blockEntity.getPos());
 
-        /* sync other half */
-        if (alt != null && ((LidOpenable)alt).getAnimationProgress(0.5f) > 0f) {
-            ChestLidAnimator src = ((ChestBlockEntityAccessor)alt).getLidAnimator();
-            ChestLidAnimator dst = ((ChestBlockEntityAccessor)blockEntity).getLidAnimator();
+        /* sync other half if it’s animating */
+        if (alt != null && ((LidOpenable) alt).getAnimationProgress(0.5f) > 0f) {
+            ChestLidAnimator src = ((ChestBlockEntityAccessor) alt).getLidAnimator();
+            ChestLidAnimator dst = ((ChestBlockEntityAccessor) blockEntity).getLidAnimator();
 
-            ChestLidAnimatorAccessor accSrc = ((ChestLidAnimatorAccessor)src);
-            ChestLidAnimatorAccessor accDst = ((ChestLidAnimatorAccessor)dst);
+            ChestLidAnimatorAccessor accSrc = (ChestLidAnimatorAccessor) src;
+            ChestLidAnimatorAccessor accDst = (ChestLidAnimatorAccessor) dst;
 
             accDst.setOpen(accSrc.getOpen());
             accDst.setProgress(accSrc.getProgress());
             accDst.setLastProgress(accSrc.getLastProgress());
 
             inst.setJustReceivedUpdate(true);
+        }
+
+        /* force smart updates on other half if needed */
+        else if (ConfigManager.CONFIG.updateType == 0) {
+            if (alt != null) {
+                BlockEntityExt altExt = (BlockEntityExt) alt;
+                if (altExt.getJustReceivedUpdate() && altExt.getRemoveChunkVariant()) {
+                    inst.setRemoveChunkVariant(true);
+                    ChunkUpdateDispatcher.queueRebuildAtBlockPos(blockEntity.getWorld(), pos.asLong());
+                    BlockEntityTracker.animMap.add(alt.getPos().asLong());
+                    inst.setJustReceivedUpdate(true);
+                }
+            }
         }
     }
 

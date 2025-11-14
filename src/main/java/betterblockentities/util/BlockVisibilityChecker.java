@@ -2,8 +2,12 @@ package betterblockentities.util;
 
 
 /* minecraft */
+import net.minecraft.block.BlockState;
+import net.minecraft.block.ChestBlock;
 import net.minecraft.block.entity.BannerBlockEntity;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.ChestBlockEntity;
+import net.minecraft.block.enums.ChestType;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.Frustum;
 import net.minecraft.entity.Entity;
@@ -11,8 +15,10 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.RaycastContext;
+import net.minecraft.world.World;
 
 /* java/misc */
 import java.util.ArrayList;
@@ -63,11 +69,46 @@ public class BlockVisibilityChecker {
         return false; //all sample points blocked
     }
 
-    /* setup bounding box */
+    /* get the other chest half's block pos so we can generate its bounding box */
+    public static BlockPos getOtherChestHalf(World world, BlockPos pos) {
+        BlockState state = world.getBlockState(pos);
+        if (!(state.getBlock() instanceof ChestBlock)) return null;
+
+        ChestType type = state.get(ChestBlock.CHEST_TYPE);
+        if (type == ChestType.SINGLE) return null; // important
+
+        Direction facing = state.get(ChestBlock.FACING);
+
+        Direction side = (type == ChestType.LEFT)
+                ? facing.rotateYClockwise()
+                : facing.rotateYCounterclockwise();
+
+        BlockPos otherPos = pos.offset(side);
+
+        BlockState otherState = world.getBlockState(otherPos);
+        if (!(otherState.getBlock() instanceof ChestBlock)) return null;
+
+        ChestType otherType = otherState.get(ChestBlock.CHEST_TYPE);
+        if (otherType == ChestType.SINGLE) return null;
+
+        return otherPos;
+    }
+
+    /*
+        setup bounding box, we could probably skip the function above
+        and just expand the existing box instead of using box union
+        which should be slightly more efficient. guess this is a TODO
+    */
     private static Box setupBox(BlockEntity entity, BlockPos pos) {
         if (entity instanceof BannerBlockEntity)
             return new Box(pos).expand(0, 1, 0);
-        return new Box(pos);
+        else if (!(entity instanceof ChestBlockEntity))
+            return new Box(pos);
+
+        BlockPos other = getOtherChestHalf(entity.getWorld(), pos);
+        if (other == null) return new Box(pos);
+
+        return new Box(pos).union(new Box(other));
     }
 
     /* preform frustum visibility check */
