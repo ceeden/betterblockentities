@@ -57,7 +57,17 @@ public class ModelGenerator
         JsonObject model = new JsonObject();
         model.addProperty("parent", "block/block");
         JsonObject textures = new JsonObject();
-        textures.addProperty("particle", texture);
+        textures.addProperty(texKey, texture);
+        model.add("textures", textures);
+        model.add("elements", GSON.toJsonTree(elements));
+        return model;
+    }
+
+    protected static JsonObject makeModelWithParticle(String texKey, String texture, String particle, List<TemplateLoader.ElementRecord> elements) {
+        JsonObject model = new JsonObject();
+        model.addProperty("parent", "block/block");
+        JsonObject textures = new JsonObject();
+        textures.addProperty("particle", particle);
         textures.addProperty(texKey, texture);
         model.add("textures", textures);
         model.add("elements", GSON.toJsonTree(elements));
